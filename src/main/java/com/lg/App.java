@@ -1,19 +1,20 @@
 package com.lg;
 
-import static spark.Spark.get;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.lg.controllers.CommandController;
+import com.lg.controllers.QueryController;
+import com.lg.infrastructure.GuiceModule;
+
 import static spark.Spark.post;
+import static spark.Spark.put;
 
 public class App {
 
     public static void main(String[] args) {
-        get("/game/:id", (req, res) -> {
-            res.status(200);
-            return new Game();
-        });
-        post("/game", (req, res) -> {
-            Game newGame = new Game();
-            res.status(201);
-            return newGame.Id;
-        });
+        Injector injector = Guice.createInjector(new GuiceModule());
+
+        put("/query/:name", injector.getInstance(QueryController.class));
+        post("/command/:name", injector.getInstance(CommandController.class));
     }
 }

@@ -34,5 +34,22 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.4.4.v20170414" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.msemys:esjc:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec-http:4.1.13.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.6.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.inject:guice:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.1" level="project" />
   </component>
 </module>
