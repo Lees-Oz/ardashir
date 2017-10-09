@@ -1,11 +1,12 @@
 package com.lg.queryExecutors;
 
-import com.lg.messages.queries.GetGame;
+import com.lg.cqrs.IExecuteQuery;
+import com.lg.cqrs.IQuery;
 import com.lg.messages.queries.GetGameResult;
 
-public class GetGameQueryExecutor implements IExecuteQuery<GetGame, GetGameResult> {
+public class GetGameQueryExecutor implements IExecuteQuery<GetGameResult> {
     @Override
-    public GetGameResult execute(GetGame query) {
+    public GetGameResult execute(IQuery query) {
         return new GetGameResult();
     }
 }

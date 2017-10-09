@@ -1,11 +1,7 @@
 package com.lg.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.lg.infrastructure.IProcessQuery;
-import com.lg.messages.commands.ICommand;
-import com.lg.messages.queries.GetGame;
-import com.lg.messages.queries.IQuery;
+import com.lg.cqrs.IProcessQuery;
+import com.lg.utils.IJsonSerializer;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -14,37 +10,21 @@ import javax.inject.Inject;
 
 public class QueryController implements Route {
 
+    private IJsonSerializer serializer;
     private IProcessQuery queryProcessor;
 
     @Inject
-    public QueryController(IProcessQuery queryProcessor) {
-
+    public QueryController(IJsonSerializer serializer, IProcessQuery queryProcessor) {
+        this.serializer = serializer;
         this.queryProcessor = queryProcessor;
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        Object result;
-        try {
-            String queryName = request.params(":name");
-
-            Class<? extends ICommand> queryClass = (Class<? extends ICommand>) Class.forName(GetGame.class.getPackage().getName() + "." + queryName);
-
-            final ObjectMapper mapper = new ObjectMapper();
-            final ObjectReader r = mapper.readerFor(queryClass);
-
-            IQuery query = r.readValue(request.body());
-
-            result = this.queryProcessor.process(query);
-        }
-        catch (Exception e) {
-            response.body(e.toString());
-            response.status(500);
-            return response;
-        }
-
-        response.body(result.toString());
+        Object result = queryProcessor.process(request.params(":name"), request.body());
+        response.body(serializer.serialize(result));
         response.status(200);
+
         return response;
     }
 }

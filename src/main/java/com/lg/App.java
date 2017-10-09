@@ -4,7 +4,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.lg.controllers.CommandController;
 import com.lg.controllers.QueryController;
-import com.lg.infrastructure.GuiceModule;
 
 import static spark.Spark.post;
 import static spark.Spark.put;

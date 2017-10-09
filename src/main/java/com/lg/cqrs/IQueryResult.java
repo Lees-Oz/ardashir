@@ -1,4 +1,4 @@
-package com.lg.messages.queries;
+package com.lg.cqrs;
 
 public interface IQueryResult {
 }
