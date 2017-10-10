@@ -1,4 +1,4 @@
-package com.lg;
+package com.lg.unit;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

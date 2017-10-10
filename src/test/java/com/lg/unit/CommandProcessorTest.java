@@ -1,4 +1,4 @@
-package com.lg;
+package com.lg.unit;
 
 import com.google.inject.Injector;
 import com.lg.commandExecutors.RequestNewGameCommandExecutor;

@@ -1,4 +1,4 @@
-package com.lg;
+package com.lg.unit;
 
 import com.lg.controllers.CommandController;
 import com.lg.cqrs.IProcessCommand;
