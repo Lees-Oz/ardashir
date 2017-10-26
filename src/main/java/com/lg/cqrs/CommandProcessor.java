@@ -21,9 +21,9 @@ public class CommandProcessor implements IProcessCommand {
         Class<? extends ICommand> commandClass = this.commandFinder.findCommandClass(name);
         ICommand command = (ICommand) this.serializer.deserialize(body, commandClass);
 
-        Class executorClass = this.commandFinder.findCommandExecutorClass(name);
+        Class<? extends IExecuteCommand> executorClass = this.commandFinder.findCommandExecutorClass(name);
 
-        IExecuteCommand<?> executor = (IExecuteCommand<?>) this.injector.getInstance(executorClass);
+        IExecuteCommand<? extends ICommand> executor = (IExecuteCommand<? extends ICommand>) this.injector.getInstance(executorClass);
 
         executor.execute(command);
     }

@@ -1,5 +1,5 @@
 package com.lg.cqrs;
 
-public interface IExecuteQuery<TResult extends IQueryResult> {
-    TResult execute(IQuery query);
+public interface IExecuteQuery<TQuery extends IQuery> {
+    IQueryResult execute(IQuery query);
 }

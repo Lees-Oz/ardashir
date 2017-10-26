@@ -20,9 +20,9 @@ public class QueryProcessor implements IProcessQuery {
     public IQueryResult process(String name, String body) throws Exception {
         Class<? extends IQuery> queryClass = this.queryFinder.findQueryClass(name);
         IQuery query = (IQuery) this.serializer.deserialize(body, queryClass);
-        Class executorType = this.queryFinder.findQueryExecutorClass(name);
+        Class<? extends IExecuteQuery> executorType = this.queryFinder.findQueryExecutorClass(name);
 
-        IExecuteQuery<?> executor = (IExecuteQuery<?>) this.injector.getInstance(executorType);
+        IExecuteQuery<? extends IQuery> executor = (IExecuteQuery<? extends IQuery>) this.injector.getInstance(executorType);
 
         return executor.execute(query);
     }

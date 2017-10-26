@@ -1,21 +1,34 @@
 package com.lg.domain;
 
+import com.lg.domain.events.DomainEvent;
+import com.lg.domain.events.NewGameRegistered;
+
 import java.util.UUID;
 
 public class Game {
-    public String Id;
+    private String id;
 
-    public final int CHECKERS_COUNT = 15;
-    public final int POINTS_COUNT = 24;
+    private int dice1;
+    private int dice2;
 
+    private Board board;
 
+    public static Game StartNewGame(String id, UUID playerId) {
+        Game newGame = new Game(id);
+        newGame.apply(new NewGameRegistered(id, playerId));
 
-    public Game(UUID id) {
-        Id = id.toString();
+        return newGame;
     }
 
-    private class Point{
-        public int position;
-        public String player;
+    private Game(String id) {
+        this.id = id;
+    }
+
+    private void apply(DomainEvent e) {
+
+    }
+
+    public String getId() {
+        return id;
     }
 }

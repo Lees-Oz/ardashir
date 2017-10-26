@@ -6,6 +6,11 @@ import java.util.UUID;
 
 public class GameRepo {
     public Game getGame(String id) {
-        return new Game(UUID.fromString(id));
+        // Raise from event store
+        return Game.StartNewGame(UUID.randomUUID().toString(), UUID.randomUUID());
+    }
+
+    public void save(Game game){
+
     }
 }
