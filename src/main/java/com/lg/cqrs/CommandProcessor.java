@@ -4,7 +4,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.lg.utils.IJsonSerializer;
 
+import java.lang.reflect.Method;
+
 public class CommandProcessor implements IProcessCommand {
+    private final String METHOD_NAME = "execute";
+
     private IFindCommand commandFinder;
     private IJsonSerializer serializer;
     private Injector injector;
@@ -18,13 +22,13 @@ public class CommandProcessor implements IProcessCommand {
 
     @Override
     public void process(String name, String body) throws Exception {
-        Class<? extends ICommand> commandClass = this.commandFinder.findCommandClass(name);
-        ICommand command = (ICommand) this.serializer.deserialize(body, commandClass);
+        Class<? extends ICommand> commandType = this.commandFinder.findCommandClass(name);
+        ICommand command = (ICommand) this.serializer.deserialize(body, commandType);
 
-        Class<? extends IExecuteCommand> executorClass = this.commandFinder.findCommandExecutorClass(name);
+        Class<? extends IExecuteCommand> executorType = this.commandFinder.findCommandExecutorClass(name);
+        IExecuteCommand<? extends ICommand> executor = (IExecuteCommand<? extends ICommand>) this.injector.getInstance(executorType);
 
-        IExecuteCommand<? extends ICommand> executor = (IExecuteCommand<? extends ICommand>) this.injector.getInstance(executorClass);
-
-        executor.execute(command);
+        Method executeMethod = executorType.getMethod(METHOD_NAME, commandType);
+        executeMethod.invoke(executor, command);
     }
 }

@@ -14,7 +14,7 @@ public class QuitGameCommandExecutor implements IExecuteCommand<QuitGame> {
     }
 
     @Override
-    public void execute(ICommand command) {
+    public void execute(QuitGame command) {
         System.out.println(command.toString());
     }
 }

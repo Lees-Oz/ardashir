@@ -7,10 +7,8 @@ import com.lg.messages.queries.GetGameResult;
 
 public class GetGameQueryExecutor implements IExecuteQuery<GetGame> {
     @Override
-    public GetGameResult execute(IQuery query) {
-        GetGame qry = (GetGame) query; // Let's see if there's a way to have GetGame type in argument already
-
+    public GetGameResult execute(GetGame query) {
         // Read from projections
-        return new GetGameResult(qry.getGameId());
+        return new GetGameResult(query.getGameId());
     }
 }
