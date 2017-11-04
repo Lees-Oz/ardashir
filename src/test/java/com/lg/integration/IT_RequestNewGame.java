@@ -1,8 +1,7 @@
 package com.lg.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lg.messages.commands.RequestNewGame;
-import com.lg.messages.queries.GetGame;
+import com.lg.messages.queries.GetMyGame;
 import com.lg.utils.JsonSerializer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -23,7 +22,7 @@ public class IT_RequestNewGame {
         // Arrange
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://localhost:4567/command/RequestNewGame");
-        httpPost.setEntity(new StringEntity(serializer.serialize(new RequestNewGame(UUID.randomUUID(), UUID.randomUUID()))));
+        httpPost.setEntity(new StringEntity(serializer.serialize(new RequestNewGame(UUID.randomUUID()))));
 
         // Act
         CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -37,8 +36,8 @@ public class IT_RequestNewGame {
     public void When_query_request_Should_process() throws Exception {
         // Arrange
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut("http://localhost:4567/query/GetGame");
-        httpPut.setEntity(new StringEntity(serializer.serialize(new GetGame(UUID.randomUUID().toString()))));
+        HttpPut httpPut = new HttpPut("http://localhost:4567/query/GetMyGame");
+        httpPut.setEntity(new StringEntity(serializer.serialize(new GetMyGame(UUID.randomUUID().toString()))));
 
         // Act
         CloseableHttpResponse response = httpClient.execute(httpPut);

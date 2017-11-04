@@ -6,6 +6,7 @@ import com.lg.es.GameRepo;
 import com.lg.messages.commands.RequestNewGame;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 public class RequestNewGameCommandExecutor implements IExecuteCommand<RequestNewGame> {
 
@@ -17,10 +18,8 @@ public class RequestNewGameCommandExecutor implements IExecuteCommand<RequestNew
     }
 
     @Override
-    public void execute(RequestNewGame command) {
-        // Validate gameId is unique
-
-        Game newGame = Game.startNewGame(command.getGameId().toString(), command.getPlayerId());
+    public void execute(RequestNewGame command) throws Exception {
+        Game newGame = Game.registerNewGame(UUID.randomUUID().toString(), command.getPlayerId());
         this.repo.save(newGame);
     }
 }

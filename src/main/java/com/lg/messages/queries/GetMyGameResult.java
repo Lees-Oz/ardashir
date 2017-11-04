@@ -2,13 +2,13 @@ package com.lg.messages.queries;
 
 import com.lg.cqrs.IQueryResult;
 
-public class GetGameResult implements IQueryResult {
+public class GetMyGameResult implements IQueryResult {
     private String gameId;
 
-    public GetGameResult() {
+    public GetMyGameResult() {
     }
 
-    public GetGameResult(String gameId) {
+    public GetMyGameResult(String gameId) {
         this.gameId = gameId;
     }
 
