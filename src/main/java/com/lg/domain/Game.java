@@ -3,9 +3,7 @@ package com.lg.domain;
 import com.lg.domain.events.GameStarted;
 import com.lg.domain.events.NewGameRegistered;
 import com.lg.domain.events.PartnerJoined;
-import com.lg.domain.events.PlayerTurned;
 import com.lg.domain.services.IRollDice;
-import com.lg.domain.services.RollDiceService;
 import com.lg.domain.valueobjects.Move;
 import com.lg.domain.valueobjects.Dice;
 import com.lg.es.AggregateRoot;
@@ -61,7 +59,6 @@ public class Game extends AggregateRoot {
         // TODO: check if move can be done
 
         Dice newDice = rollDice.roll();
-        apply(new PlayerTurned(this.getId(), playerId, move, newDice.getOne(), newDice.getTwo()));
 
         // TODO: check if player can make a turn, otherwise next turn is from same player
     }
