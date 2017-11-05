@@ -1,8 +1,8 @@
 package com.lg.messages.commands;
 
-import com.lg.cqrs.ICommand;
+import com.lg.cqrs.Command;
 
-public class MakeTurn implements ICommand {
+public class MakeTurn implements Command {
     private String gameId;
 
     public MakeTurn() {

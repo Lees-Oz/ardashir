@@ -5,21 +5,21 @@ import com.github.msemys.esjc.EventStoreBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.lg.cqrs.*;
-import com.lg.domain.services.IRollDice;
+import com.lg.domain.services.RollDice;
 import com.lg.domain.services.RollDiceService;
-import com.lg.utils.IJsonSerializer;
-import com.lg.utils.JsonSerializer;
+import com.lg.utils.SerializeJson;
+import com.lg.utils.Json;
 
 public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(IJsonSerializer.class).to(JsonSerializer.class);
-        bind(IProcessCommand.class).to(CommandProcessor.class);
-        bind(IProcessQuery.class).to(QueryProcessor.class);
-        bind(IFindCommand.class).to(CommandFinder.class);
-        bind(IFindQuery.class).to(QueryFinder.class);
+        bind(SerializeJson.class).to(Json.class);
+        bind(ProcessCommand.class).to(CommandProcessor.class);
+        bind(ProcessQuery.class).to(QueryProcessor.class);
+        bind(FindCommand.class).to(CommandFinder.class);
+        bind(FindQuery.class).to(QueryFinder.class);
 
-        bind(IRollDice.class).to(RollDiceService.class);
+        bind(RollDice.class).to(RollDiceService.class);
     }
 
     @Provides

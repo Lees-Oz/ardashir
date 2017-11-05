@@ -1,10 +1,10 @@
 package com.lg.messages.commands;
 
-import com.lg.cqrs.ICommand;
+import com.lg.cqrs.Command;
 
 import java.util.UUID;
 
-public class RequestNewGame implements ICommand {
+public class RequestNewGame implements Command {
     private UUID playerId;
 
     public RequestNewGame() {

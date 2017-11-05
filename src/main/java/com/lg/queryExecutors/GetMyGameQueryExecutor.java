@@ -1,10 +1,10 @@
 package com.lg.queryExecutors;
 
-import com.lg.cqrs.IExecuteQuery;
+import com.lg.cqrs.ExecuteQuery;
 import com.lg.messages.queries.GetMyGame;
 import com.lg.messages.queries.GetMyGameResult;
 
-public class GetMyGameQueryExecutor implements IExecuteQuery<GetMyGame> {
+public class GetMyGameQueryExecutor implements ExecuteQuery<GetMyGame> {
     @Override
     public GetMyGameResult execute(GetMyGame query) {
         // Read from projections

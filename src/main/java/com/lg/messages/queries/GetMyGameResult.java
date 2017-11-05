@@ -1,8 +1,8 @@
 package com.lg.messages.queries;
 
-import com.lg.cqrs.IQueryResult;
+import com.lg.cqrs.QueryResult;
 
-public class GetMyGameResult implements IQueryResult {
+public class GetMyGameResult implements QueryResult {
     private String gameId;
 
     public GetMyGameResult() {

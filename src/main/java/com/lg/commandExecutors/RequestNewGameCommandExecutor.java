@@ -1,6 +1,6 @@
 package com.lg.commandExecutors;
 
-import com.lg.cqrs.IExecuteCommand;
+import com.lg.cqrs.ExecuteCommand;
 import com.lg.domain.Game;
 import com.lg.es.GameRepo;
 import com.lg.messages.commands.RequestNewGame;
@@ -8,7 +8,7 @@ import com.lg.messages.commands.RequestNewGame;
 import javax.inject.Inject;
 import java.util.UUID;
 
-public class RequestNewGameCommandExecutor implements IExecuteCommand<RequestNewGame> {
+public class RequestNewGameCommandExecutor implements ExecuteCommand<RequestNewGame> {
 
     private GameRepo repo;
 

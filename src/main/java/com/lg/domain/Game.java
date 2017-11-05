@@ -3,7 +3,7 @@ package com.lg.domain;
 import com.lg.domain.events.GameStarted;
 import com.lg.domain.events.NewGameRegistered;
 import com.lg.domain.events.PartnerJoined;
-import com.lg.domain.services.IRollDice;
+import com.lg.domain.services.RollDice;
 import com.lg.domain.valueobjects.Move;
 import com.lg.domain.valueobjects.Dice;
 import com.lg.es.AggregateRoot;
@@ -28,7 +28,7 @@ public class Game extends AggregateRoot {
         return newGame;
     }
 
-    public void joinGame(UUID playerId, IRollDice rollDice) throws Exception {
+    public void joinGame(UUID playerId, RollDice rollDice) throws Exception {
         if (this.player2 == playerId) {
             return;
         }
@@ -47,7 +47,7 @@ public class Game extends AggregateRoot {
         apply(new GameStarted(this.id, newDice.getOne(), newDice.getTwo()));
     }
 
-    public void doMove(UUID playerId, Move move, IRollDice rollDice) throws Exception {
+    public void doMove(UUID playerId, Move move, RollDice rollDice) throws Exception {
         if (!this.isGameStarted) {
             throw new IllegalStateException("Game isn't yet started.");
         }

@@ -2,9 +2,10 @@ package com.lg.unit;
 
 import com.lg.domain.Game;
 import com.lg.domain.events.*;
-import com.lg.domain.services.IRollDice;
+import com.lg.domain.services.RollDice;
 import com.lg.domain.services.RollDiceService;
 import com.lg.domain.valueobjects.Dice;
+import com.lg.es.DomainEvent;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -38,7 +39,7 @@ public class GameTest extends TestCase {
         Game target = Game.registerNewGame(gameId, player1Id);
 
         // Assert
-        List<IDomainEvent> events = target.flush();
+        List<DomainEvent> events = target.flush();
         Assert.assertEquals(events.size(), 1);
         Assert.assertTrue(events.get(0) instanceof NewGameRegistered);
 
@@ -53,7 +54,7 @@ public class GameTest extends TestCase {
         String gameId = UUID.randomUUID().toString();
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
-        IRollDice rollDice = mock(IRollDice.class);
+        RollDice rollDice = mock(RollDice.class);
 
         Dice dice = new Dice(3, 6);
         when(rollDice.roll()).thenReturn(dice);
@@ -65,7 +66,7 @@ public class GameTest extends TestCase {
         target.joinGame(player2Id, rollDice);
 
         // Assert
-        List<IDomainEvent> events = target.flush();
+        List<DomainEvent> events = target.flush();
         Assert.assertEquals(events.size(), 2);
         Assert.assertTrue(events.get(0) instanceof PartnerJoined);
         Assert.assertTrue(events.get(1) instanceof GameStarted);
@@ -88,7 +89,7 @@ public class GameTest extends TestCase {
 //        String gameId = UUID.randomUUID().toString();
 //        UUID player1Id = UUID.randomUUID();
 //        UUID player2Id = UUID.randomUUID();
-//        IRollDice rollDice = mock(IRollDice.class);
+//        RollDice rollDice = mock(RollDice.class);
 //
 //        Dice dice = new Dice(5, 2);
 //        when(rollDice.roll()).thenReturn(dice);
@@ -103,7 +104,7 @@ public class GameTest extends TestCase {
 //        target.doMove(player1Id, new Move(move.getFrom1(), move.getSteps1(), move.getFrom2(), move.getSteps2()), rollDice);
 //
 //        // Assert
-//        List<IDomainEvent> events = target.flush();
+//        List<DomainEvent> events = target.flush();
 //        Assert.assertEquals(events.size(), 1);
 //        Assert.assertTrue(events.get(0) instanceof PlayerTurned);
 //

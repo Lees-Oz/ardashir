@@ -1,5 +1,5 @@
 package com.lg.cqrs;
 
-public interface IExecuteCommand<T extends ICommand> {
+public interface ExecuteCommand<T extends Command> {
     void execute(T command) throws Exception;
 }

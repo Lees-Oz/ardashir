@@ -1,8 +1,8 @@
-package com.lg.domain.events;
+package com.lg.es;
 
 import java.util.Date;
 
-public interface IDomainEvent {
+public interface DomainEvent {
     int version();
     Date happenedOn();
 }

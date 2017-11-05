@@ -1,8 +1,8 @@
 package com.lg.messages.commands;
 
-import com.lg.cqrs.ICommand;
+import com.lg.cqrs.Command;
 
-public class JoinGame implements ICommand {
+public class JoinGame implements Command {
     private String gameId;
 
     public JoinGame() {

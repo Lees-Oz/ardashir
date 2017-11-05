@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 import java.io.IOException;
 
-public class JsonSerializer implements IJsonSerializer {
+public class Json implements SerializeJson {
 
     @Override
     public String serialize(Object obj) throws JsonProcessingException {

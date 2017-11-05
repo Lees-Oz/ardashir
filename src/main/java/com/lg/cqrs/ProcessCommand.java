@@ -1,5 +1,5 @@
 package com.lg.cqrs;
 
-public interface IProcessCommand {
+public interface ProcessCommand {
     void process(String name, String body) throws Exception;
 }

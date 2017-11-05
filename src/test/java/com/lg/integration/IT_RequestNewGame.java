@@ -2,7 +2,7 @@ package com.lg.integration;
 
 import com.lg.messages.commands.RequestNewGame;
 import com.lg.messages.queries.GetMyGame;
-import com.lg.utils.JsonSerializer;
+import com.lg.utils.Json;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class IT_RequestNewGame {
 
-    private JsonSerializer serializer = new JsonSerializer();
+    private Json serializer = new Json();
 
     @Test
     public void When_command_request_Should_process() throws Exception {

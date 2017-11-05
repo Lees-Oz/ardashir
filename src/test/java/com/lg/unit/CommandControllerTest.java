@@ -1,7 +1,7 @@
 package com.lg.unit;
 
 import com.lg.controllers.CommandController;
-import com.lg.cqrs.IProcessCommand;
+import com.lg.cqrs.ProcessCommand;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -37,7 +37,7 @@ public class CommandControllerTest extends TestCase
         Request req = mock(Request.class);
         Response res = mock(Response.class);
 
-        IProcessCommand commandProcessor = mock(IProcessCommand.class);
+        ProcessCommand commandProcessor = mock(ProcessCommand.class);
 
         String commandName = UUID.randomUUID().toString();
         String requestBody = UUID.randomUUID().toString();

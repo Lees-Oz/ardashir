@@ -1,8 +1,10 @@
 package com.lg.domain.events;
 
+import com.lg.es.DomainEvent;
+
 import java.util.Date;
 
-public class GameStarted implements IDomainEvent {
+public class GameStarted implements DomainEvent {
     private String gameId;
     private int dice1;
     private int dice2;

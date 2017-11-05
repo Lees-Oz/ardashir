@@ -6,20 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lg.domain.events.IDomainEvent;
-
 public abstract class AggregateRoot {
 
     private static final String MUTATOR_METHOD_NAME = "when";
     private static Map<String, Method> mutatorMethodsCache = new HashMap<>();
-    private List<IDomainEvent> mutatingEvents;
+    private List<DomainEvent> mutatingEvents;
     private int unmutatedVersion;
 
-    protected AggregateRoot(List<IDomainEvent> eventStream, int streamVersion) throws Exception {
+    protected AggregateRoot(List<DomainEvent> eventStream, int streamVersion) throws Exception {
 
         this();
 
-        for (IDomainEvent event : eventStream) {
+        for (DomainEvent event : eventStream) {
             this.mutateWhen(event);
         }
 
@@ -32,14 +30,14 @@ public abstract class AggregateRoot {
         this.setMutatingEvents(new ArrayList<>(2));
     }
 
-    protected void apply(IDomainEvent event) throws Exception {
+    protected void apply(DomainEvent event) throws Exception {
         this.getMutatingEvents().add(event);
         this.mutateWhen(event);
     }
 
-    protected void mutateWhen(IDomainEvent IDomainEvent) throws Exception {
+    protected void mutateWhen(DomainEvent DomainEvent) throws Exception {
         Class<? extends AggregateRoot> rootType = this.getClass();
-        Class<? extends IDomainEvent> eventType = IDomainEvent.getClass();
+        Class<? extends DomainEvent> eventType = DomainEvent.getClass();
 
         String methodKey = rootType.toString() + ":" + eventType.toString();
         Method method = mutatorMethodsCache.get(methodKey);
@@ -48,13 +46,13 @@ public abstract class AggregateRoot {
             method = this.cacheMutatorMethodFor(methodKey, rootType, eventType);
         }
 
-        method.invoke(this, IDomainEvent);
+        method.invoke(this, DomainEvent);
     }
 
     private Method cacheMutatorMethodFor(
             String aKey,
             Class<? extends AggregateRoot> rootType,
-            Class<? extends IDomainEvent> eventType) throws NoSuchMethodException {
+            Class<? extends DomainEvent> eventType) throws NoSuchMethodException {
 
         synchronized (mutatorMethodsCache) {
 
@@ -68,8 +66,8 @@ public abstract class AggregateRoot {
         }
     }
 
-    public List<IDomainEvent> flush() {
-        List<IDomainEvent> events = this.getMutatingEvents();
+    public List<DomainEvent> flush() {
+        List<DomainEvent> events = this.getMutatingEvents();
         this.setMutatingEvents(new ArrayList<>());
         return events;
     }
@@ -78,7 +76,7 @@ public abstract class AggregateRoot {
         return this.getUnmutatedVersion() + 1;
     }
 
-    public List<IDomainEvent> getMutatingEvents() {
+    public List<DomainEvent> getMutatingEvents() {
         return this.mutatingEvents;
     }
 
@@ -87,7 +85,7 @@ public abstract class AggregateRoot {
     }
 
 
-    private void setMutatingEvents(List<IDomainEvent> events) {
+    private void setMutatingEvents(List<DomainEvent> events) {
         this.mutatingEvents = events;
     }
 

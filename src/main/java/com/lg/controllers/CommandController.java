@@ -1,6 +1,6 @@
 package com.lg.controllers;
 
-import com.lg.cqrs.IProcessCommand;
+import com.lg.cqrs.ProcessCommand;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 public class CommandController implements Route  {
 
-    private IProcessCommand commandProcessor;
+    private ProcessCommand commandProcessor;
 
     @Inject
-    public CommandController(IProcessCommand commandProcessor) {
+    public CommandController(ProcessCommand commandProcessor) {
         this.commandProcessor = commandProcessor;
     }
 

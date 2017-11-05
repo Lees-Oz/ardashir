@@ -1,13 +1,12 @@
 package com.lg.commandExecutors;
 
-import com.lg.cqrs.ICommand;
-import com.lg.cqrs.IExecuteCommand;
+import com.lg.cqrs.ExecuteCommand;
 import com.lg.es.GameRepo;
 import com.lg.messages.commands.QuitGame;
 import javax.inject.Inject;
 
 
-public class QuitGameCommandExecutor implements IExecuteCommand<QuitGame> {
+public class QuitGameCommandExecutor implements ExecuteCommand<QuitGame> {
 
     @Inject
     public QuitGameCommandExecutor(GameRepo repo) {

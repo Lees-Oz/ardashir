@@ -1,9 +1,11 @@
 package com.lg.domain.events;
 
+import com.lg.es.DomainEvent;
+
 import java.util.Date;
 import java.util.UUID;
 
-public class PartnerJoined implements IDomainEvent {
+public class PartnerJoined implements DomainEvent {
     private String gameId;
     private UUID playerId;
 

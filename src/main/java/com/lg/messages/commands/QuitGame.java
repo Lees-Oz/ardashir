@@ -1,10 +1,10 @@
 package com.lg.messages.commands;
 
-import com.lg.cqrs.ICommand;
+import com.lg.cqrs.Command;
 
 import java.util.UUID;
 
-public class QuitGame implements ICommand {
+public class QuitGame implements Command {
     private UUID gameId;
 
     public QuitGame() {
