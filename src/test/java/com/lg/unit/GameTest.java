@@ -2,7 +2,7 @@ package com.lg.unit;
 
 import com.lg.domain.Game;
 import com.lg.domain.events.*;
-import com.lg.domain.services.RollDice;
+import com.lg.domain.RollDice;
 import com.lg.domain.services.RollDiceService;
 import com.lg.domain.valueobjects.Dice;
 import com.lg.es.DomainEvent;

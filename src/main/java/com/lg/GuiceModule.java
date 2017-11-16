@@ -2,34 +2,51 @@ package com.lg;
 
 import com.github.msemys.esjc.EventStore;
 import com.github.msemys.esjc.EventStoreBuilder;
+import com.github.msemys.esjc.projection.ProjectionManager;
+import com.github.msemys.esjc.projection.ProjectionManagerBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.lg.cqrs.*;
-import com.lg.domain.services.RollDice;
+import com.lg.domain.RollDice;
 import com.lg.domain.services.RollDiceService;
+import com.lg.es.GameRepository;
+import com.lg.es.DomainEventFinder;
+import com.lg.es.EventSourceRepository;
+import com.lg.es.FindDomainEvent;
 import com.lg.utils.SerializeJson;
-import com.lg.utils.Json;
+import com.lg.utils.JsonSerializer;
+
+import java.time.Duration;
 
 public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(SerializeJson.class).to(Json.class);
+        bind(SerializeJson.class).to(JsonSerializer.class);
         bind(ProcessCommand.class).to(CommandProcessor.class);
         bind(ProcessQuery.class).to(QueryProcessor.class);
         bind(FindCommand.class).to(CommandFinder.class);
         bind(FindQuery.class).to(QueryFinder.class);
+        bind(EventSourceRepository.class).to(GameRepository.class);
+        bind(FindDomainEvent.class).to(DomainEventFinder.class);
 
         bind(RollDice.class).to(RollDiceService.class);
     }
 
     @Provides
     EventStore provideEventStore() {
-
-        EventStore eventstore = EventStoreBuilder.newBuilder()
-            .singleNodeAddress("192.168.99.100", 1113)
+        return EventStoreBuilder.newBuilder()
+            .singleNodeAddress("localhost", 1113)
             .userCredentials("admin", "changeit")
             .build();
-        return eventstore;
+    }
+
+    @Provides
+    ProjectionManager provideProjections() {
+        return ProjectionManagerBuilder.newBuilder()
+            .address("127.0.0.1", 2113)
+            .userCredentials("admin", "changeit")
+            .operationTimeout(Duration.ofSeconds(20))
+            .build();
     }
 }
 

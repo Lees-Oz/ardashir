@@ -9,8 +9,11 @@ public class GameStarted implements DomainEvent {
     private int dice1;
     private int dice2;
 
-    final private int version;
-    final private Date happenedOn;
+    private int version;
+    private Date happenedOn;
+
+    public GameStarted() {
+    }
 
     public GameStarted(String gameId, int dice1, int dice2) {
         this.gameId = gameId;
@@ -27,12 +30,12 @@ public class GameStarted implements DomainEvent {
     }
 
     @Override
-    public int version() {
+    public int getVersion() {
         return version;
     }
 
     @Override
-    public Date happenedOn() {
+    public Date getHappenedOn() {
         return happenedOn;
     }
 

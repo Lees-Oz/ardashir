@@ -6,15 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AggregateRoot {
+public abstract class AggregateRoot implements EventSource {
+    protected String id;
 
     private static final String MUTATOR_METHOD_NAME = "when";
-    private static Map<String, Method> mutatorMethodsCache = new HashMap<>();
     private List<DomainEvent> mutatingEvents;
-    private int unmutatedVersion;
+    private long unmutatedVersion;
 
-    protected AggregateRoot(List<DomainEvent> eventStream, int streamVersion) throws Exception {
+    private static Map<String, Method> mutatorMethodsCache = new HashMap<>();
 
+    protected AggregateRoot(List<DomainEvent> eventStream, long streamVersion) throws Exception {
         this();
 
         for (DomainEvent event : eventStream) {
@@ -25,9 +26,8 @@ public abstract class AggregateRoot {
     }
 
     protected AggregateRoot() {
-        super();
-
-        this.setMutatingEvents(new ArrayList<>(2));
+        this.setMutatingEvents(new ArrayList<>());
+        this.setUnmutatedVersion(-1);
     }
 
     protected void apply(DomainEvent event) throws Exception {
@@ -35,9 +35,9 @@ public abstract class AggregateRoot {
         this.mutateWhen(event);
     }
 
-    protected void mutateWhen(DomainEvent DomainEvent) throws Exception {
+    protected void mutateWhen(DomainEvent domainEvent) throws Exception {
         Class<? extends AggregateRoot> rootType = this.getClass();
-        Class<? extends DomainEvent> eventType = DomainEvent.getClass();
+        Class<? extends DomainEvent> eventType = domainEvent.getClass();
 
         String methodKey = rootType.toString() + ":" + eventType.toString();
         Method method = mutatorMethodsCache.get(methodKey);
@@ -46,7 +46,7 @@ public abstract class AggregateRoot {
             method = this.cacheMutatorMethodFor(methodKey, rootType, eventType);
         }
 
-        method.invoke(this, DomainEvent);
+        method.invoke(this, domainEvent);
     }
 
     private Method cacheMutatorMethodFor(
@@ -72,15 +72,16 @@ public abstract class AggregateRoot {
         return events;
     }
 
-    public int mutatedVersion() {
-        return this.getUnmutatedVersion() + 1;
+    @Override
+    public String getId() {
+        return id;
     }
 
     public List<DomainEvent> getMutatingEvents() {
         return this.mutatingEvents;
     }
 
-    public int getUnmutatedVersion() {
+    public long getUnmutatedVersion() {
         return this.unmutatedVersion;
     }
 
@@ -89,7 +90,7 @@ public abstract class AggregateRoot {
         this.mutatingEvents = events;
     }
 
-    private void setUnmutatedVersion(int version) {
+    private void setUnmutatedVersion(long version) {
         this.unmutatedVersion = version;
     }
 }

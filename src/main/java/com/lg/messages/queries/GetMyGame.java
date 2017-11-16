@@ -2,17 +2,19 @@ package com.lg.messages.queries;
 
 import com.lg.cqrs.Query;
 
+import java.util.UUID;
+
 public class GetMyGame implements Query {
-    private String playerId;
+    private UUID playerId;
 
     public GetMyGame() {
     }
 
-    public GetMyGame(String playerId) {
+    public GetMyGame(UUID playerId) {
         this.playerId = playerId;
     }
 
-    public String getPlayerId() {
+    public UUID getPlayerId() {
         return playerId;
     }
 }

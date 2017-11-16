@@ -9,8 +9,10 @@ public class NewGameRegistered implements DomainEvent {
     private String gameId;
     private UUID playerId;
 
-    final private int version;
-    final private Date happenedOn;
+    private int version;
+    private Date happenedOn;
+
+    public NewGameRegistered() {}
 
     public NewGameRegistered(String gameId, UUID playerId) {
         this.gameId = gameId;
@@ -29,12 +31,12 @@ public class NewGameRegistered implements DomainEvent {
     }
 
     @Override
-    public int version() {
+    public int getVersion() {
         return version;
     }
 
     @Override
-    public Date happenedOn() {
+    public Date getHappenedOn() {
         return happenedOn;
     }
 }

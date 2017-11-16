@@ -1,5 +1,6 @@
 package com.lg.domain.services;
 
+import com.lg.domain.RollDice;
 import com.lg.domain.valueobjects.Dice;
 
 import java.util.Random;

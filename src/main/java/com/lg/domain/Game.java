@@ -1,18 +1,15 @@
 package com.lg.domain;
 
-import com.lg.domain.events.GameStarted;
-import com.lg.domain.events.NewGameRegistered;
-import com.lg.domain.events.PartnerJoined;
-import com.lg.domain.services.RollDice;
+import com.lg.domain.events.*;
 import com.lg.domain.valueobjects.Move;
 import com.lg.domain.valueobjects.Dice;
 import com.lg.es.AggregateRoot;
+import com.lg.es.DomainEvent;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Game extends AggregateRoot {
-    private String id;
-
     private Dice dice;
 
     private UUID player1;
@@ -28,6 +25,12 @@ public class Game extends AggregateRoot {
         return newGame;
     }
 
+    public Game() {}
+
+    public Game(List<DomainEvent> eventStream, long version) throws Exception {
+        super(eventStream, version);
+    }
+
     public void joinGame(UUID playerId, RollDice rollDice) throws Exception {
         if (this.player2 == playerId) {
             return;
@@ -41,10 +44,10 @@ public class Game extends AggregateRoot {
             throw new IllegalStateException("Another player is already joined.");
         }
 
-        apply(new PartnerJoined(this.id, playerId));
+        apply(new PartnerJoined(this.id.toString(), playerId));
 
         Dice newDice = rollDice.roll();
-        apply(new GameStarted(this.id, newDice.getOne(), newDice.getTwo()));
+        apply(new GameStarted(this.id.toString(), newDice.getOne(), newDice.getTwo()));
     }
 
     public void doMove(UUID playerId, Move move, RollDice rollDice) throws Exception {

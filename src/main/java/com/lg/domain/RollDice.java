@@ -1,4 +1,4 @@
-package com.lg.domain.services;
+package com.lg.domain;
 
 import com.lg.domain.valueobjects.Dice;
 

@@ -7,7 +7,7 @@ import com.lg.utils.SerializeJson;
 import java.lang.reflect.Method;
 
 public class CommandProcessor implements ProcessCommand {
-    private final String METHOD_NAME = "execute";
+    private final String EXECUTE_METHOD_NAME = "execute";
 
     private FindCommand commandFinder;
     private SerializeJson serializer;
@@ -28,7 +28,7 @@ public class CommandProcessor implements ProcessCommand {
         Class<? extends ExecuteCommand> executorType = this.commandFinder.findCommandExecutorClass(name);
         ExecuteCommand<? extends Command> executor = (ExecuteCommand<? extends Command>) this.injector.getInstance(executorType);
 
-        Method executeMethod = executorType.getMethod(METHOD_NAME, commandType);
+        Method executeMethod = executorType.getMethod(EXECUTE_METHOD_NAME, commandType);
         executeMethod.invoke(executor, command);
     }
 }
