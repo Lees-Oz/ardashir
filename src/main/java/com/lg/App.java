@@ -2,8 +2,8 @@ package com.lg;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.lg.controllers.CommandController;
-import com.lg.controllers.QueryController;
+import com.lg.web.CommandController;
+import com.lg.web.QueryController;
 
 import static spark.Spark.post;
 import static spark.Spark.put;

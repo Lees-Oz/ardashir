@@ -1,7 +1,7 @@
 package com.lg.unit;
 
-import com.lg.controllers.CommandController;
-import com.lg.cqrs.ProcessCommand;
+import com.lg.web.CommandController;
+import com.lg.command.ProcessCommand;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

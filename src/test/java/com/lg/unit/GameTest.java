@@ -1,11 +1,11 @@
 package com.lg.unit;
 
-import com.lg.domain.Game;
-import com.lg.domain.events.*;
-import com.lg.domain.RollDice;
-import com.lg.domain.services.RollDiceService;
-import com.lg.domain.valueobjects.Dice;
-import com.lg.es.DomainEvent;
+import com.lg.command.domain.Game;
+import com.lg.command.domain.events.*;
+import com.lg.command.domain.RollDice;
+import com.lg.command.domain.services.RollDiceService;
+import com.lg.command.domain.valueobjects.Dice;
+import com.lg.command.es.DomainEvent;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

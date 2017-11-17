@@ -1,9 +1,10 @@
 package com.lg.integration;
 
-import com.lg.messages.commands.JoinGame;
-import com.lg.messages.commands.RequestNewGame;
-import com.lg.messages.queries.GetMyGame;
-import com.lg.messages.queries.GetMyGameResult;
+import com.lg.integration.infrastructure.Client;
+import com.lg.query.messages.GetMyGame;
+import com.lg.query.messages.GetMyGameResult;
+import com.lg.command.messages.JoinGame;
+import com.lg.command.messages.RequestNewGame;
 import org.junit.Assert;
 import org.junit.Test;
 
