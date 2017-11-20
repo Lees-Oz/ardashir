@@ -20,6 +20,7 @@ import com.lg.command.es.GameRepository;
 import com.lg.command.es.DomainEventFinder;
 import com.lg.command.es.EventSourceRepository;
 import com.lg.command.es.FindDomainEvent;
+import com.lg.query.projections.Projection;
 import com.lg.utils.SerializeJson;
 import com.lg.utils.JsonSerializer;
 
@@ -29,13 +30,19 @@ public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(SerializeJson.class).to(JsonSerializer.class);
+
+        // Command
         bind(ProcessCommand.class).to(CommandProcessor.class);
-        bind(ProcessQuery.class).to(QueryProcessor.class);
         bind(FindCommand.class).to(CommandFinder.class);
-        bind(FindQuery.class).to(QueryFinder.class);
         bind(EventSourceRepository.class).to(GameRepository.class);
         bind(FindDomainEvent.class).to(DomainEventFinder.class);
 
+        // Query
+        bind(ProcessQuery.class).to(QueryProcessor.class);
+        bind(FindQuery.class).to(QueryFinder.class);
+        bind(com.lg.query.projections.ProjectionManager.class).to(Projection.class);
+
+        // Domain
         bind(RollDice.class).to(RollDiceService.class);
     }
 
