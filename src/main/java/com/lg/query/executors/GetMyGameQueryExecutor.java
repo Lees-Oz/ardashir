@@ -24,6 +24,5 @@ public class GetMyGameQueryExecutor implements ExecuteQuery<GetMyGame> {
         String gameId = projection.getOrDefault(query.getPlayerId().toString(), "");
 
         return new GetMyGameResult(gameId);
-
     }
 }

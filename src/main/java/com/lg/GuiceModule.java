@@ -14,7 +14,7 @@ import com.lg.command.CommandFinder;
 import com.lg.command.CommandProcessor;
 import com.lg.command.FindCommand;
 import com.lg.command.ProcessCommand;
-import com.lg.command.domain.RollDice;
+import com.lg.command.domain.services.RollDice;
 import com.lg.command.domain.services.RollDiceService;
 import com.lg.command.es.GameRepository;
 import com.lg.command.es.DomainEventFinder;

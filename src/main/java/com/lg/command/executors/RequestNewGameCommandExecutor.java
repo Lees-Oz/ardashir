@@ -1,7 +1,7 @@
 package com.lg.command.executors;
 
 import com.lg.command.ExecuteCommand;
-import com.lg.command.domain.Game;
+import com.lg.command.domain.entities.Game;
 import com.lg.command.es.GameRepository;
 import com.lg.command.messages.RequestNewGame;
 

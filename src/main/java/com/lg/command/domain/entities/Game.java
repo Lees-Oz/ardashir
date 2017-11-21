@@ -1,5 +1,6 @@
-package com.lg.command.domain;
+package com.lg.command.domain.entities;
 
+import com.lg.command.domain.services.RollDice;
 import com.lg.command.domain.events.*;
 import com.lg.command.domain.valueobjects.Move;
 import com.lg.command.domain.valueobjects.Dice;
@@ -25,7 +26,7 @@ public class Game extends AggregateRoot {
         return newGame;
     }
 
-    public Game() {}
+    private Game() {}
 
     public Game(List<DomainEvent> eventStream, long version) throws Exception {
         super(eventStream, version);
@@ -44,10 +45,10 @@ public class Game extends AggregateRoot {
             throw new IllegalStateException("Another player is already joined.");
         }
 
-        apply(new PartnerJoined(this.id.toString(), playerId));
+        apply(new PartnerJoined(this.id, playerId));
 
         Dice newDice = rollDice.roll();
-        apply(new GameStarted(this.id.toString(), newDice.getOne(), newDice.getTwo()));
+        apply(new GameStarted(this.id, newDice.getOne(), newDice.getTwo()));
     }
 
     public void doMove(UUID playerId, Move move, RollDice rollDice) throws Exception {

@@ -1,4 +1,4 @@
-package com.lg.command.domain;
+package com.lg.command.domain.valueobjects;
 
 
 import java.util.UUID;

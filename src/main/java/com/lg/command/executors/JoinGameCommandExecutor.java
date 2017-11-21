@@ -1,8 +1,8 @@
 package com.lg.command.executors;
 
 import com.lg.command.ExecuteCommand;
-import com.lg.command.domain.Game;
-import com.lg.command.domain.RollDice;
+import com.lg.command.domain.entities.Game;
+import com.lg.command.domain.services.RollDice;
 import com.lg.command.es.GameRepository;
 import com.lg.command.messages.JoinGame;
 

@@ -1,8 +1,8 @@
 package com.lg.unit;
 
-import com.lg.command.domain.Game;
+import com.lg.command.domain.entities.Game;
 import com.lg.command.domain.events.*;
-import com.lg.command.domain.RollDice;
+import com.lg.command.domain.services.RollDice;
 import com.lg.command.domain.services.RollDiceService;
 import com.lg.command.domain.valueobjects.Dice;
 import com.lg.command.es.DomainEvent;

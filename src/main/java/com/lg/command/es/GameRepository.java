@@ -2,7 +2,7 @@ package com.lg.command.es;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.msemys.esjc.*;
-import com.lg.command.domain.Game;
+import com.lg.command.domain.entities.Game;
 import com.lg.utils.SerializeJson;
 
 import javax.inject.Inject;
@@ -43,9 +43,7 @@ public class GameRepository implements EventSourceRepository<Game> {
             nextEventNumber = eventsSlice.nextEventNumber;
         } while(!eventsSlice.isEndOfStream);
 
-        Game game = new Game(domainEvents, eventsSlice.lastEventNumber);
-
-        return game;
+        return new Game(domainEvents, eventsSlice.lastEventNumber);
     }
 
     @Override
