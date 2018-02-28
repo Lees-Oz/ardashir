@@ -5,19 +5,18 @@ import com.lg.command.es.DomainEvent;
 import java.util.Date;
 import java.util.UUID;
 
-public class PartnerJoined implements DomainEvent {
+public class NewGameSessionStarted implements DomainEvent {
     private String gameId;
-    private UUID playerId;
+    private UUID byPlayerId;
 
     private int version;
     private Date happenedOn;
 
-    public PartnerJoined() {
-    }
+    public NewGameSessionStarted() {}
 
-    public PartnerJoined(String gameId, UUID playerId) {
+    public NewGameSessionStarted(String gameId, UUID byPlayerId) {
         this.gameId = gameId;
-        this.playerId = playerId;
+        this.byPlayerId = byPlayerId;
 
         this.version = 1;
         this.happenedOn = new Date();
@@ -27,8 +26,8 @@ public class PartnerJoined implements DomainEvent {
         return gameId;
     }
 
-    public UUID getPlayerId() {
-        return playerId;
+    public UUID getByPlayerId() {
+        return byPlayerId;
     }
 
     @Override

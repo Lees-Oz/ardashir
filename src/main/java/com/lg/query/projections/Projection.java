@@ -2,6 +2,7 @@ package com.lg.query.projections;
 
 import com.github.msemys.esjc.projection.ProjectionManager;
 import com.github.msemys.esjc.projection.ProjectionMode;
+import com.google.gson.JsonObject;
 import com.lg.utils.SerializeJson;
 
 import javax.inject.Inject;
@@ -28,6 +29,8 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
     }
 
     public void initialize() throws IOException, ExecutionException, InterruptedException {
+        //
+
         List<Path> projectionDefinitions = new ArrayList<>();
 
         try (Stream<Path> paths = Files.walk(Paths.get("./src/main/java/"))) {
@@ -59,5 +62,17 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
     public Map<String, String> getMap(String name) throws ExecutionException, InterruptedException, IOException {
         String result = projections.getResult(name).get();
         return serializer.deserialize(result);
+    }
+
+    public void initStreamProjection(String projectionName, String streamId) throws ExecutionException, InterruptedException {
+
+        // Per projection Subscribe to event, initiating the projection to exist, it's often event of stream creation
+        //      Create projection in ES
+        //        // Read content from js
+        //        // Do replacement of stream name
+        //        // Try to read this projection from ES by name
+        //        // if Found - compare js, if different then replace
+
+        List<com.github.msemys.esjc.projection.Projection> projs = projections.findAll().get();
     }
 }

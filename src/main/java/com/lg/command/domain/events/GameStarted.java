@@ -1,13 +1,18 @@
 package com.lg.command.domain.events;
 
+import com.lg.command.domain.valueobjects.Dice;
+import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
 import com.lg.command.es.DomainEvent;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class GameStarted implements DomainEvent {
     private String gameId;
-    private int dice1;
-    private int dice2;
+    private ProvideBackgammonConfig config;
+    private Dice dice;
+    private UUID whitePlayerId;
+    private UUID blackPlayerId;
 
     private int version;
     private Date happenedOn;
@@ -15,11 +20,12 @@ public class GameStarted implements DomainEvent {
     public GameStarted() {
     }
 
-    public GameStarted(String gameId, int dice1, int dice2) {
+    public GameStarted(String gameId, ProvideBackgammonConfig config, Dice dice, UUID whitePlayerId, UUID blackPlayerId) {
         this.gameId = gameId;
-        this.dice1 = dice1;
-        this.dice2 = dice2;
-
+        this.config = config;
+        this.dice = dice;
+        this.whitePlayerId = whitePlayerId;
+        this.blackPlayerId = blackPlayerId;
 
         this.version = 1;
         this.happenedOn = new Date();
@@ -39,11 +45,28 @@ public class GameStarted implements DomainEvent {
         return happenedOn;
     }
 
-    public int getDice1() {
-        return dice1;
+
+    public Dice getDice() {
+        return dice;
     }
 
-    public int getDice2() {
-        return dice2;
+    public ProvideBackgammonConfig getConfig() {
+        return config;
+    }
+
+    public UUID getWhitePlayerId() {
+        return whitePlayerId;
+    }
+
+    public void setWhitePlayerId(UUID whitePlayerId) {
+        this.whitePlayerId = whitePlayerId;
+    }
+
+    public UUID getBlackPlayerId() {
+        return blackPlayerId;
+    }
+
+    public void setBlackPlayerId(UUID blackPlayerId) {
+        this.blackPlayerId = blackPlayerId;
     }
 }

@@ -5,16 +5,17 @@ import com.lg.command.es.DomainEvent;
 import java.util.Date;
 import java.util.UUID;
 
-public class NewGameRegistered implements DomainEvent {
+public class PartnerJoinedGameSession implements DomainEvent {
     private String gameId;
     private UUID playerId;
 
     private int version;
     private Date happenedOn;
 
-    public NewGameRegistered() {}
+    public PartnerJoinedGameSession() {
+    }
 
-    public NewGameRegistered(String gameId, UUID playerId) {
+    public PartnerJoinedGameSession(String gameId, UUID playerId) {
         this.gameId = gameId;
         this.playerId = playerId;
 

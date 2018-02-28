@@ -1,7 +1,7 @@
 package com.lg.command.executors;
 
 import com.lg.command.ExecuteCommand;
-import com.lg.command.domain.entities.Game;
+import com.lg.command.domain.entities.GameSession;
 import com.lg.command.es.GameRepository;
 import com.lg.command.messages.RequestNewGame;
 
@@ -19,7 +19,7 @@ public class RequestNewGameCommandExecutor implements ExecuteCommand<RequestNewG
 
     @Override
     public void execute(RequestNewGame command) throws Exception {
-        Game newGame = Game.registerNewGame("game-" + UUID.randomUUID().toString(), command.getPlayerId());
+        GameSession newGame = GameSession.startNewGameSession("game-" + UUID.randomUUID().toString(), command.getPlayerId());
         this.repo.save(newGame);
     }
 }

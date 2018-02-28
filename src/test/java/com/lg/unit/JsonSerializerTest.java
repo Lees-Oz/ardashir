@@ -1,6 +1,6 @@
 package com.lg.unit;
 
-import com.lg.command.domain.events.NewGameRegistered;
+import com.lg.command.domain.events.NewGameSessionStarted;
 import com.lg.command.es.DomainEvent;
 import com.lg.utils.JsonSerializer;
 import junit.framework.Test;
@@ -33,21 +33,21 @@ public class JsonSerializerTest extends TestCase {
                 "  \"playerId\": \"" + playerId + "\"\n" +
                 "}";
 
-        Class<? extends DomainEvent> type = NewGameRegistered.class;
+        Class<? extends DomainEvent> type = NewGameSessionStarted.class;
 
         // Act
-        NewGameRegistered e = (NewGameRegistered) target.deserialize(json, type);
+        NewGameSessionStarted e = (NewGameSessionStarted) target.deserialize(json, type);
 
         // Assert
         Assert.assertNotNull(e);
         Assert.assertTrue(e.getGameId().equals(gameId));
-        Assert.assertTrue(e.getPlayerId().equals(UUID.fromString(playerId)));
+        Assert.assertTrue(e.getByPlayerId().equals(UUID.fromString(playerId)));
     }
 
     public void test_When_serialize_object_Should_serialize() throws Exception {
         // Arrange
         JsonSerializer target = new JsonSerializer();
-        NewGameRegistered arg = new NewGameRegistered(UUID.randomUUID().toString(), UUID.randomUUID());
+        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID());
 
         // Act
         String result = target.serialize(arg);
@@ -81,15 +81,15 @@ public class JsonSerializerTest extends TestCase {
     public void test_When_serialize_and_deserialize_object_Should_result_in_equivalent_object() throws Exception {
         // Arrange
         JsonSerializer target = new JsonSerializer();
-        NewGameRegistered arg = new NewGameRegistered(UUID.randomUUID().toString(), UUID.randomUUID());
+        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID());
 
         // Act
         String resultString = target.serialize(arg);
-        NewGameRegistered resultObj = (NewGameRegistered) target.deserialize(resultString, arg.getClass());
+        NewGameSessionStarted resultObj = (NewGameSessionStarted) target.deserialize(resultString, arg.getClass());
 
         // Assert
         Assert.assertNotNull(resultObj);
-        Assert.assertEquals(resultObj.getPlayerId(), arg.getPlayerId());
+        Assert.assertEquals(resultObj.getByPlayerId(), arg.getByPlayerId());
         Assert.assertEquals(resultObj.getGameId(), arg.getGameId());
     }
 }

@@ -2,7 +2,7 @@ package com.lg.command.es;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.msemys.esjc.*;
-import com.lg.command.domain.entities.Game;
+import com.lg.command.domain.entities.GameSession;
 import com.lg.utils.SerializeJson;
 
 import javax.inject.Inject;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class GameRepository implements EventSourceRepository<Game> {
+public class GameRepository implements EventSourceRepository<GameSession> {
     private EventStore eventStore;
     private FindDomainEvent domainEventFinder;
     private SerializeJson serializer;
@@ -23,7 +23,7 @@ public class GameRepository implements EventSourceRepository<Game> {
     }
 
     @Override
-    public Game get(String id) throws Exception {
+    public GameSession get(String id) throws Exception {
         List<DomainEvent> domainEvents = new ArrayList<>();
 
         int batchSize = 1000;
@@ -43,11 +43,11 @@ public class GameRepository implements EventSourceRepository<Game> {
             nextEventNumber = eventsSlice.nextEventNumber;
         } while(!eventsSlice.isEndOfStream);
 
-        return new Game(domainEvents, eventsSlice.lastEventNumber);
+        return new GameSession(domainEvents, eventsSlice.lastEventNumber);
     }
 
     @Override
-    public void save(Game eventSource) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void save(GameSession eventSource) throws JsonProcessingException, ExecutionException, InterruptedException {
         long streamVersion = eventSource.getUnmutatedVersion();
         List<DomainEvent> mutatingEvents = eventSource.getMutatingEvents();
         List<EventData> events = new ArrayList<>();

@@ -3,11 +3,11 @@ fromAll()
     $init: function() {
         return {}
     },
-    NewGameRegistered: function(s, e) {
+    NewGameSessionStarted: function(s, e) {
         var body = JSON.parse(e.bodyRaw);
-        s[body.playerId] = body.gameId;
+        s[body.byPlayerId] = body.gameId;
     },
-    PartnerJoined: function(s, e) {
+    PartnerJoinedGameSession: function(s, e) {
         var body = JSON.parse(e.bodyRaw);
         s[body.playerId] = body.gameId;
     }

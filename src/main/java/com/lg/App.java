@@ -15,11 +15,8 @@ import static spark.Spark.put;
 
 public class App {
 
-    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+    public static void main(String[] args) {
         Injector injector = Guice.createInjector(new GuiceModule());
-
-        ProjectionManager projection = injector.getInstance(ProjectionManager.class);
-        projection.initialize();
 
         put("/query/:name", injector.getInstance(QueryController.class));
         post("/command/:name", injector.getInstance(CommandController.class));

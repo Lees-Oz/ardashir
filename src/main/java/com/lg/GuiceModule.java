@@ -6,6 +6,8 @@ import com.github.msemys.esjc.projection.ProjectionManager;
 import com.github.msemys.esjc.projection.ProjectionManagerBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.lg.command.domain.valueobjects.BackgammonConfig;
+import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
 import com.lg.query.FindQuery;
 import com.lg.query.ProcessQuery;
 import com.lg.query.QueryFinder;
@@ -44,6 +46,7 @@ public class GuiceModule extends AbstractModule {
 
         // Domain
         bind(RollDice.class).to(RollDiceService.class);
+        bind(ProvideBackgammonConfig.class).to(BackgammonConfig.class);
     }
 
     @Provides

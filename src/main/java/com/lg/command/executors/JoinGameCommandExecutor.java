@@ -1,8 +1,9 @@
 package com.lg.command.executors;
 
 import com.lg.command.ExecuteCommand;
-import com.lg.command.domain.entities.Game;
+import com.lg.command.domain.entities.GameSession;
 import com.lg.command.domain.services.RollDice;
+import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
 import com.lg.command.es.GameRepository;
 import com.lg.command.messages.JoinGame;
 
@@ -12,17 +13,19 @@ public class JoinGameCommandExecutor implements ExecuteCommand<JoinGame> {
 
     private GameRepository repo;
     private RollDice rollDice;
+    private ProvideBackgammonConfig gameConfig;
 
     @Inject
-    public JoinGameCommandExecutor(GameRepository repo, RollDice rollDice) {
+    public JoinGameCommandExecutor(GameRepository repo, RollDice rollDice, ProvideBackgammonConfig gameConfig) {
         this.repo = repo;
         this.rollDice = rollDice;
+        this.gameConfig = gameConfig;
     }
 
     @Override
     public void execute(JoinGame command) throws Exception {
-        Game game = repo.get(command.getGameId());
-        game.joinGame(command.getPlayerId(), this.rollDice);
+        GameSession game = repo.get(command.getGameId());
+        game.joinGameSession(command.getPlayerId(), this.rollDice, this.gameConfig);
         this.repo.save(game);
     }
 }
