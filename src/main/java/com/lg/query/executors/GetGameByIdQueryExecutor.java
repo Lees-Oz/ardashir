@@ -7,7 +7,6 @@ import com.lg.query.projections.Projection;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class GetGameByIdQueryExecutor implements ExecuteQuery<GetGameById> {
@@ -19,10 +18,8 @@ public class GetGameByIdQueryExecutor implements ExecuteQuery<GetGameById> {
     }
 
     @Override
-    public GetGameByIdResult execute(GetGameById query) throws IOException, ExecutionException, InterruptedException {
-        Map<String, String> projection = this.projection.getMap("Games");
-        String game = projection.getOrDefault(query.getGameId(), null);
-
-        return new GetGameByIdResult(game);
+    public GetGameByIdResult execute(GetGameById query) throws ExecutionException, InterruptedException, IOException {
+        Object games = this.projection.getPartition(GetGameByIdResult.class, "games", query.getGameId());
+        return (GetGameByIdResult) games;
     }
 }

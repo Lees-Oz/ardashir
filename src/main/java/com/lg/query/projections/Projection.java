@@ -1,8 +1,12 @@
 package com.lg.query.projections;
 
+import com.evanlennick.retry4j.CallExecutor;
+import com.evanlennick.retry4j.config.RetryConfig;
+import com.evanlennick.retry4j.config.RetryConfigBuilder;
+import com.github.msemys.esjc.projection.CreateOptions;
+import com.github.msemys.esjc.projection.ProjectionException;
 import com.github.msemys.esjc.projection.ProjectionManager;
 import com.github.msemys.esjc.projection.ProjectionMode;
-import com.google.gson.JsonObject;
 import com.lg.utils.SerializeJson;
 
 import javax.inject.Inject;
@@ -10,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +27,13 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
     private ProjectionManager projections;
     private SerializeJson serializer;
 
+    RetryConfig config = new RetryConfigBuilder()
+            .retryOnSpecificExceptions(Exception.class)
+            .withMaxNumberOfTries(10)
+            .withDelayBetweenTries(200, ChronoUnit.MILLIS)
+            .withExponentialBackoff()
+            .build();
+
     @Inject
     public Projection(ProjectionManager projections, SerializeJson serializer) {
         this.projections = projections;
@@ -29,8 +41,6 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
     }
 
     public void initialize() throws IOException, ExecutionException, InterruptedException {
-        //
-
         List<Path> projectionDefinitions = new ArrayList<>();
 
         try (Stream<Path> paths = Files.walk(Paths.get("./src/main/java/"))) {
@@ -52,27 +62,35 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
                     .findFirst();
 
             if (a.isPresent()) {
-                projections.delete(projectionName);
+                System.out.println("Trying to disable and delete projection " + projectionName);
+                projections.disable(projectionName).get();
+                projections.delete(projectionName).get();
             }
 
-            projections.create(projectionName, content, ProjectionMode.CONTINUOUS);
+            new CallExecutor(config).execute(() -> {
+                System.out.println("Trying create projection " + projectionName);
+                projections.create(projectionName, content, CreateOptions.newBuilder()
+                            .mode(ProjectionMode.CONTINUOUS)
+                            .emit(true)
+                            .enabled(true)
+                            .checkpoints(false)
+                            .trackEmittedStreams(false)
+                            .build()
+                    ).get();
+                return null;
+            });
         }
+
+        projections.shutdown();
     }
 
     public Map<String, String> getMap(String name) throws ExecutionException, InterruptedException, IOException {
-        String result = projections.getResult(name).get();
-        return serializer.deserialize(result);
+        return serializer.deserialize(projections.getResult(name).get());
     }
 
-    public void initStreamProjection(String projectionName, String streamId) throws ExecutionException, InterruptedException {
-
-        // Per projection Subscribe to event, initiating the projection to exist, it's often event of stream creation
-        //      Create projection in ES
-        //        // Read content from js
-        //        // Do replacement of stream name
-        //        // Try to read this projection from ES by name
-        //        // if Found - compare js, if different then replace
-
-        List<com.github.msemys.esjc.projection.Projection> projs = projections.findAll().get();
+    @Override
+    public Object getPartition(Class targetClass, String projection, String partition) throws ExecutionException, InterruptedException, IOException {
+        String json = projections.getPartitionResult(projection, partition).get();
+        return serializer.deserialize(json, targetClass);
     }
 }

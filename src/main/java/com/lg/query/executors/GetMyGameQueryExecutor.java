@@ -20,7 +20,7 @@ public class GetMyGameQueryExecutor implements ExecuteQuery<GetMyGame> {
 
     @Override
     public GetMyGameResult execute(GetMyGame query) throws IOException, ExecutionException, InterruptedException {
-        Map<String, String> projection = this.projection.getMap("CurrentGamePerPlayerMap");
+        Map<String, String> projection = this.projection.getMap("currentGamePerPlayerMap");
         String gameId = projection.getOrDefault(query.getPlayerId().toString(), "");
 
         return new GetMyGameResult(gameId);

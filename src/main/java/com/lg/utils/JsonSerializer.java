@@ -17,12 +17,18 @@ public class JsonSerializer implements SerializeJson {
 
     @Override
     public Object deserialize(String json, Class<?> targetClass) throws IOException {
+        if (json.isEmpty()) {
+            return null;
+        }
         ObjectReader r = mapper.readerFor(targetClass);
         return r.readValue(json);
     }
 
     @Override
     public Object deserialize(byte[] json, Class<?> targetClass) throws IOException {
+        if (json.length == 0) {
+            return null;
+        }
         ObjectReader r = mapper.readerFor(targetClass);
         return r.readValue(new String(json));
     }

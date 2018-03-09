@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Dice {
-    private final int one;
-    private final int two;
+    private int one;
+    private int two;
+
+    public Dice() {
+    }
 
     public Dice(int one, int two) {
         this.one = one;

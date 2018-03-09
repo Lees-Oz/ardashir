@@ -8,5 +8,5 @@ public interface ProjectionManager {
     void initialize() throws IOException, ExecutionException, InterruptedException;
     Map<String, String> getMap(String projectionName) throws ExecutionException, InterruptedException, IOException;
 
-    void initStreamProjection(String projectionName, String streamId) throws ExecutionException, InterruptedException;
+    Object getPartition(Class targetClass, String projection, String partition) throws ExecutionException, InterruptedException, IOException;
 }

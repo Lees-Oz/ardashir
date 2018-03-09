@@ -1,9 +1,11 @@
 package com.lg.command.domain.valueobjects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Arrays;
 
 public class Turn {
-    final private Move[] moves;
+    private Move[] moves;
 
     public Turn(Move[] moves) {
         this.moves = moves;
@@ -13,6 +15,10 @@ public class Turn {
         return moves;
     }
 
+    public Turn() {
+    }
+
+    @JsonIgnore
     public int getTotalSteps() {
         return Arrays.stream(moves).mapToInt(Move::getSteps).sum();
     }

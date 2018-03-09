@@ -3,11 +3,14 @@ package com.lg.command.domain.valueobjects;
 import java.util.Objects;
 
 public class BoardPoint {
-    final private int index;
-    final private int checkersCount;
-    final private PlayerColor playerColor;
+    private int index;
+    private int checkersCount;
+    private PlayerColor playerColor;
 
-    BoardPoint(int index, int checkersCount, PlayerColor playerColor) {
+    public BoardPoint() {
+    }
+
+    public BoardPoint(int index, int checkersCount, PlayerColor playerColor) {
         this.index = index;
         this.checkersCount = checkersCount;
         this.playerColor = playerColor;

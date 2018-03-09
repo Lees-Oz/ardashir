@@ -28,7 +28,6 @@ public class GameSessionTest extends TestCase {
         return new TestSuite( AppTest.class );
     }
 
-
     public void test_When_registered_Should_be_registered() throws Exception {
         // Arrange
         String gameId = UUID.randomUUID().toString();
@@ -56,16 +55,18 @@ public class GameSessionTest extends TestCase {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         RollDice rollDice = mock(RollDice.class);
-        ProvideBackgammonConfig config = new BackgammonConfig();
+        ProvideBackgammonConfig provideConfig = mock(ProvideBackgammonConfig.class);
+
 
         Dice dice = new Dice(3, 6);
         when(rollDice.roll()).thenReturn(dice);
+        when(provideConfig.provide()).thenReturn(DefaultBackgammonConfig.get());
 
         GameSession target = GameSession.startNewGameSession(gameId, player1Id);
         target.flush();
 
         // Act
-        target.joinGameSession(player2Id, rollDice, config);
+        target.joinGameSession(player2Id, rollDice, provideConfig);
 
         // Assert
         List<DomainEvent> events = target.flush();
@@ -83,7 +84,6 @@ public class GameSessionTest extends TestCase {
         Assert.assertEquals(e2.getDice(), dice);
         Assert.assertEquals(e2.getWhitePlayerId(), player1Id);
         Assert.assertEquals(e2.getBlackPlayerId(), player2Id);
-
     }
 
     public void test_When_player1_turns_after_game_start_Should_turn_happen() throws Exception {
@@ -92,13 +92,15 @@ public class GameSessionTest extends TestCase {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         RollDice rollDice = mock(RollDice.class);
-        ProvideBackgammonConfig config = new BackgammonConfig();
+        ProvideBackgammonConfig provideConfig = mock(ProvideBackgammonConfig.class);
 
         Dice dice = new Dice(5, 2);
         when(rollDice.roll()).thenReturn(dice);
+        when(provideConfig.provide()).thenReturn(DefaultBackgammonConfig.get());
 
         GameSession target = GameSession.startNewGameSession(gameId, player1Id);
-        target.joinGameSession(player2Id, rollDice, config);
+
+        target.joinGameSession(player2Id, rollDice, provideConfig);
         target.flush();
 
         Turn turn = new Turn(new Move[] { new Move(0, dice.getOne()), new Move(0, dice.getTwo())});

@@ -6,25 +6,25 @@ import com.github.msemys.esjc.projection.ProjectionManager;
 import com.github.msemys.esjc.projection.ProjectionManagerBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.lg.command.domain.valueobjects.BackgammonConfig;
-import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
-import com.lg.query.FindQuery;
-import com.lg.query.ProcessQuery;
-import com.lg.query.QueryFinder;
-import com.lg.query.QueryProcessor;
 import com.lg.command.CommandFinder;
 import com.lg.command.CommandProcessor;
 import com.lg.command.FindCommand;
 import com.lg.command.ProcessCommand;
 import com.lg.command.domain.services.RollDice;
 import com.lg.command.domain.services.RollDiceService;
-import com.lg.command.es.GameRepository;
+import com.lg.command.domain.valueobjects.BackgammonConfigProvider;
+import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
 import com.lg.command.es.DomainEventFinder;
 import com.lg.command.es.EventSourceRepository;
 import com.lg.command.es.FindDomainEvent;
+import com.lg.command.es.GameRepository;
+import com.lg.query.FindQuery;
+import com.lg.query.ProcessQuery;
+import com.lg.query.QueryFinder;
+import com.lg.query.QueryProcessor;
 import com.lg.query.projections.Projection;
-import com.lg.utils.SerializeJson;
 import com.lg.utils.JsonSerializer;
+import com.lg.utils.SerializeJson;
 
 import java.time.Duration;
 
@@ -46,7 +46,7 @@ public class GuiceModule extends AbstractModule {
 
         // Domain
         bind(RollDice.class).to(RollDiceService.class);
-        bind(ProvideBackgammonConfig.class).to(BackgammonConfig.class);
+        bind(ProvideBackgammonConfig.class).to(BackgammonConfigProvider.class);
     }
 
     @Provides

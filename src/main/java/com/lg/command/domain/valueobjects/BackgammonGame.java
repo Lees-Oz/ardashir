@@ -13,9 +13,9 @@ public class BackgammonGame {
     private BackgammonBoard board;
     private PlayerColor nextPlayerColor;
     private Dice dice;
-    private ProvideBackgammonConfig config;
+    private BackgammonConfig config;
 
-    public BackgammonGame(ProvideBackgammonConfig config, Dice dice) {
+    public BackgammonGame(BackgammonConfig config, Dice dice) {
         this.config = config;
         this.dice = dice;
         this.board = new BackgammonBoard(config);

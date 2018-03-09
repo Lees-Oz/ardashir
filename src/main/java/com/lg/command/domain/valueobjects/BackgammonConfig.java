@@ -2,27 +2,29 @@ package com.lg.command.domain.valueobjects;
 
 import java.util.Objects;
 
-public class BackgammonConfig implements ProvideBackgammonConfig {
+public class BackgammonConfig {
     private int checkersCount;
     private int pointsCount;
     private int whiteStartPosition;
     private int blackStartPosition;
-    private int domeBorder;
+    private int domeWidth;
+
 
     public BackgammonConfig() {
-        this.checkersCount = 15;
-        this.pointsCount = 24;
-        this.whiteStartPosition = 0;
-        this.blackStartPosition = 12;
-        this.domeBorder = 6;
     }
 
-    @Override
+    public BackgammonConfig(int checkersCount, int pointsCount, int whiteStartPosition, int blackStartPosition, int domeWidth) {
+        this.checkersCount = checkersCount;
+        this.pointsCount = pointsCount;
+        this.whiteStartPosition = whiteStartPosition;
+        this.blackStartPosition = blackStartPosition;
+        this.domeWidth = domeWidth;
+    }
+
     public int getCheckersCount() {
         return checkersCount;
     }
 
-    @Override
     public int getPointsCount() {
         return pointsCount;
     }
@@ -35,9 +37,8 @@ public class BackgammonConfig implements ProvideBackgammonConfig {
         return blackStartPosition;
     }
 
-    @Override
-    public int getDomeBorder() {
-        return domeBorder;
+    public int getDomeWidth() {
+        return domeWidth;
     }
 
     @Override
@@ -49,12 +50,11 @@ public class BackgammonConfig implements ProvideBackgammonConfig {
                 getPointsCount() == that.getPointsCount() &&
                 getWhiteStartPosition() == that.getWhiteStartPosition() &&
                 getBlackStartPosition() == that.getBlackStartPosition() &&
-                getDomeBorder() == that.getDomeBorder();
+                getDomeWidth() == that.getDomeWidth();
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getCheckersCount(), getPointsCount(), getWhiteStartPosition(), getBlackStartPosition(), getDomeBorder());
+        return Objects.hash(getCheckersCount(), getPointsCount(), getWhiteStartPosition(), getBlackStartPosition(), getDomeWidth());
     }
 }

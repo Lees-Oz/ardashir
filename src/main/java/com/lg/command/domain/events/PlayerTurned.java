@@ -8,7 +8,7 @@ import java.util.Date;
 public class PlayerTurned implements DomainEvent {
     private String gameId;
     private Turn turn;
-    private Dice nextDice; // <---- maybe have it as separate event like PlayerRolledDice
+    private Dice dice; // <---- maybe have it as separate event like PlayerRolledDice
     private PlayerColor playerColor;
     private BoardPoint[] boardPoints;
 
@@ -18,10 +18,10 @@ public class PlayerTurned implements DomainEvent {
     public PlayerTurned() {
     }
 
-    public PlayerTurned(PlayerColor playerColor, Turn turn, Dice nextDice, BoardPoint[] boardPoints) {
+    public PlayerTurned(PlayerColor playerColor, Turn turn, Dice dice, BoardPoint[] boardPoints) {
         this.playerColor = playerColor;
         this.turn = turn;
-        this.nextDice = nextDice;
+        this.dice = dice;
         this.boardPoints = boardPoints;
 
         this.version = 1;
@@ -36,8 +36,8 @@ public class PlayerTurned implements DomainEvent {
         return turn;
     }
 
-    public Dice getNextDice() {
-        return nextDice;
+    public Dice getDice() {
+        return dice;
     }
 
     public PlayerColor getPlayerColor() {

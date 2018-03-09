@@ -7,7 +7,6 @@ import junit.framework.TestSuite;
 import org.junit.Assert;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -25,8 +24,7 @@ public class BackgammonBoardTest extends TestCase {
 
     public void test_When_asIfMoved_Should_return_correct_move_validity() {
         // Arrange
-        BackgammonConfig config = new BackgammonConfig();
-        BackgammonBoard target =  new BackgammonBoard(config)
+        BackgammonBoard target =  new BackgammonBoard(DefaultBackgammonConfig.get())
             .asIfMoved(PlayerColor.BLACK, new Move(12, 15))
             .asIfMoved(PlayerColor.BLACK, new Move(3, 4))
             .asIfMoved(PlayerColor.BLACK, new Move(12, 7))
@@ -42,7 +40,7 @@ public class BackgammonBoardTest extends TestCase {
         blackBusyPoints.add(12);
         blackBusyPoints.add(19);
 
-        IntStream.range(0, config.getPointsCount() - 1).forEach(x -> {
+        IntStream.range(0, DefaultBackgammonConfig.get().getPointsCount() - 1).forEach(x -> {
             if (blackBusyPoints.contains(x)) {
                 Assert.assertNull(target.asIfMoved(PlayerColor.WHITE, new Move(0, x)));
             } else {
@@ -50,7 +48,7 @@ public class BackgammonBoardTest extends TestCase {
             }
         });
 
-        IntStream.range(0, config.getPointsCount() - 1).forEach(x -> {
+        IntStream.range(0, DefaultBackgammonConfig.get().getPointsCount() - 1).forEach(x -> {
             if (blackBusyPoints.contains(x)) {
                 Assert.assertNull(target.asIfMoved(PlayerColor.WHITE, new Move(0, x)));
             } else {
@@ -60,12 +58,12 @@ public class BackgammonBoardTest extends TestCase {
     }
 
     public void test_default_boards_are_equal() {
-        Assert.assertTrue((new BackgammonBoard(new BackgammonConfig())).equals(new BackgammonBoard(new BackgammonConfig())));
+        Assert.assertTrue((new BackgammonBoard(DefaultBackgammonConfig.get())).equals(new BackgammonBoard(DefaultBackgammonConfig.get())));
     }
 
     public void test_When_doTurn_Should_be_equivalent_to_do_moves() {
         // Arrange
-        BackgammonBoard target = new BackgammonBoard(new BackgammonConfig());
+        BackgammonBoard target = new BackgammonBoard(DefaultBackgammonConfig.get());
 
         // Act
         BackgammonBoard result1 = target.asIfTurned(PlayerColor.WHITE, new Turn(new Move[] {new Move(0, 4), new Move(4, 3)}));

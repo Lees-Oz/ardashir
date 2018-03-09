@@ -2,13 +2,8 @@ package com.lg;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.lg.query.projections.Projection;
-import com.lg.query.projections.ProjectionManager;
 import com.lg.web.CommandController;
 import com.lg.web.QueryController;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import static spark.Spark.post;
 import static spark.Spark.put;

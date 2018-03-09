@@ -29,7 +29,7 @@ public class BackgammonGameTest extends TestCase {
         // Arrange
         UUID player1Id = UUID.randomUUID();
 
-        ProvideBackgammonConfig config = new BackgammonConfig();
+        BackgammonConfig config = DefaultBackgammonConfig.get();
         BackgammonGame target =  new BackgammonGame(config, new Dice(3, 6));
 
         RollDice rollDice = mock(RollDice.class);
@@ -42,7 +42,7 @@ public class BackgammonGameTest extends TestCase {
         Assert.assertNotNull(e);
         Assert.assertEquals(e.getPlayerColor(), PlayerColor.WHITE);
         Assert.assertEquals(e.getTurn(), turn);
-        Assert.assertEquals(e.getNextDice(), nextDice);
+        Assert.assertEquals(e.getDice(), nextDice);
 
         //Assert.assertNull(target.canTurn(PlayerColor.WHITE, new Turn(new Move[] { new Move(10, 3), new Move(0, 6)}), rollDice, new StringBuilder()));
         //Assert.assertNull(target.canTurn(PlayerColor.WHITE, new Turn(new Move[] { new Move(0, 12), new Move(0, 6)}), rollDice, new StringBuilder()));

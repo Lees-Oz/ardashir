@@ -1,5 +1,6 @@
 package com.lg.integration;
 
+import com.lg.command.domain.valueobjects.Dice;
 import com.lg.command.domain.valueobjects.Move;
 import com.lg.command.domain.valueobjects.Turn;
 import com.lg.command.messages.DoTurn;
@@ -58,32 +59,41 @@ public class IT_RequestNewGameSession {
             Assert.assertNotNull(x);
             Assert.assertEquals(gameId, x.getGameId());
         });
+
+        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
+            Assert.assertEquals(x.getWhitePlayerId(), player1Id);
+            Assert.assertEquals(x.getBlackPlayerId(), player2Id);
+        });
     }
 
-//    @Test
-//    public void When_doTurn_Should_update_game() throws Exception {
-//        // Arrange
-//        UUID player1Id = UUID.randomUUID();
-//        UUID player2Id = UUID.randomUUID();
-//
-//        client.command(new RequestNewGame(player1Id));
-//
-//        String gameId = client.query(GetMyGameResult.class, new GetMyGame(player1Id), null).getGameId();
-//
-//        client.command(new JoinGame(gameId, player2Id));
-//
-//        client.query(GetMyGameResult.class, new GetMyGame(player2Id), x -> {
-//            Assert.assertNotNull(x);
-//            Assert.assertEquals(gameId, x.getGameId());
-//        });
-//
-//        // Get my dice
-//        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
-//            Assert.assertNotNull(x);
-//            Assert.assertNotEquals(x.getGameJson(), "");
-//        });
-//
-//        // Act
-//        //client.command(new DoTurn(gameId, player1Id, new Turn(new Move[] { new Move(0, 3)})));
-//    }
+    @Test
+    public void When_doTurn_Should_update_game() throws Exception {
+        // Arrange
+        UUID player1Id = UUID.randomUUID();
+        UUID player2Id = UUID.randomUUID();
+
+        client.command(new RequestNewGame(player1Id));
+
+        String gameId = client.query(GetMyGameResult.class, new GetMyGame(player1Id), null).getGameId();
+
+        client.command(new JoinGame(gameId, player2Id));
+
+        // Get my dice
+        final Dice[] dice = new Dice[1];
+        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
+            Assert.assertNotNull(x);
+            Assert.assertNotNull(x.getDice());
+            dice[0] = x.getDice();
+        });
+
+        // Act
+        client.command(new DoTurn(gameId, player1Id, new Turn(new Move[] { new Move(0, dice[0].getOne()), new Move(0, dice[0].getTwo())})));
+
+        // Assert
+        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
+            Assert.assertNotNull(x);
+            Assert.assertNotNull(x.getDice());
+            Assert.assertNotNull(x.getBoardPoints());
+        });
+    }
 }

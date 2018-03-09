@@ -7,11 +7,11 @@ import java.util.stream.IntStream;
 import static com.lg.command.domain.valueobjects.PlayerColor.WHITE;
 
 public class BackgammonBoard {
-    private ProvideBackgammonConfig config;
+    private BackgammonConfig config;
 
     private BoardPoint[] points;
 
-    private BackgammonBoard(ProvideBackgammonConfig config, BoardPoint[] points) {
+    private BackgammonBoard(BackgammonConfig config, BoardPoint[] points) {
         if (config == null) {
             throw new NullPointerException("Config must me valid config.");
         }
@@ -28,7 +28,7 @@ public class BackgammonBoard {
         this.points = points;
     }
 
-    public BackgammonBoard(ProvideBackgammonConfig config) {
+    public BackgammonBoard(BackgammonConfig config) {
         if (config == null) {
             throw new NullPointerException("Config must me valid config.");
         }
@@ -78,7 +78,7 @@ public class BackgammonBoard {
 
             return Arrays.stream(points)
                     .filter(x -> x.getPlayerColor() == playerColor)
-                    .allMatch(x -> x.getIndex() >= config.getPointsCount() - config.getDomeBorder());
+                    .allMatch(x -> x.getIndex() >= config.getPointsCount() - config.getDomeWidth());
         }
 
         int destinationIndex = (move.getFrom() + move.getSteps()) % config.getPointsCount();

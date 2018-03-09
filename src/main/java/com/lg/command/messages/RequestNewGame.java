@@ -17,8 +17,4 @@ public class RequestNewGame implements Command {
     public UUID getPlayerId() {
         return this.playerId;
     }
-
-    public void setPlayerId(UUID playerId) {
-        this.playerId = playerId;
-    }
 }

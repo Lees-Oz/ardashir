@@ -6,6 +6,9 @@ public class Move {
     private int from;
     private int steps;
 
+    public Move() {
+    }
+
     public Move(int from, int steps) {
         this.from = from;
         this.steps = steps;
@@ -18,11 +21,6 @@ public class Move {
     public int getSteps() {
         return steps;
     }
-
-//    public int calculateSteps(int totalPoints) {
-//
-//        return Math.min(Math.abs(this.steps - this.from), Math.abs(this.steps + totalPoints - this.from));
-//    }
 
     @Override
     public boolean equals(Object o) {

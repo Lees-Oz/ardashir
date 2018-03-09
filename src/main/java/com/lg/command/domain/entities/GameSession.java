@@ -20,9 +20,8 @@ public class GameSession extends AggregateRoot {
     private UUID playerWhite;
     private UUID playerBlack;
 
-    private boolean isGameInProgress = false; // Status
-
-    private BackgammonGame game = null;
+    private boolean isGameInProgress;
+    private BackgammonGame game;
 
     public static GameSession startNewGameSession(String id, UUID playerId) throws Exception {
         GameSession newGameSession = new GameSession();
@@ -39,20 +38,20 @@ public class GameSession extends AggregateRoot {
     }
 
     public void joinGameSession(UUID playerId, RollDice rollDice, ProvideBackgammonConfig gameConfig) throws Exception {
-        if (this.playerBlack == playerId) {
+        if (playerBlack == playerId) {
             return;
         }
 
-        if (this.isGameInProgress) {
+        if (isGameInProgress) {
             throw new IllegalStateException("GameSession is already started.");
         }
 
-        if (this.playerBlack != null) {
+        if (playerBlack != null) {
             throw new IllegalStateException("Another player is already joined.");
         }
 
-        apply(new PartnerJoinedGameSession(this.id, playerId));
-        apply(new GameStarted(this.id, gameConfig, rollDice.roll(), playerWhite, playerBlack));
+        apply(new PartnerJoinedGameSession(id, playerId));
+        apply(new GameStarted(id, gameConfig.provide(), rollDice.roll(), playerWhite, playerBlack));
     }
 
     public void doTurn(UUID playerId, Turn turn, RollDice rollDice) throws Exception {
@@ -77,11 +76,11 @@ public class GameSession extends AggregateRoot {
     }
 
     private PlayerColor getPlayerColorById(UUID playerId) {
-        if (playerWhite == playerId) {
+        if (playerWhite.equals(playerId)) {
             return PlayerColor.WHITE;
         }
 
-        if (playerBlack == playerId) {
+        if (playerBlack.equals(playerId)) {
             return PlayerColor.BLACK;
         }
 
@@ -89,8 +88,8 @@ public class GameSession extends AggregateRoot {
     }
 
     private void when(NewGameSessionStarted e) {
-        this.id = e.getGameId();
-        this.playerWhite = e.getByPlayerId();
+        id = e.getGameId();
+        playerWhite = e.getByPlayerId();
     }
 
     private void when(PartnerJoinedGameSession e) {
@@ -99,7 +98,7 @@ public class GameSession extends AggregateRoot {
 
     private void when(GameStarted e) {
         isGameInProgress = true;
-        game = new BackgammonGame(e.getConfig(), e.getDice());
+        game = new BackgammonGame(e.getGameConfig(), e.getDice());
     }
 
     private void when(PlayerTurned e) {
