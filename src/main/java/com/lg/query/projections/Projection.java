@@ -27,7 +27,7 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
     private ProjectionManager projections;
     private SerializeJson serializer;
 
-    RetryConfig config = new RetryConfigBuilder()
+    private RetryConfig config = new RetryConfigBuilder()
             .retryOnSpecificExceptions(Exception.class)
             .withMaxNumberOfTries(10)
             .withDelayBetweenTries(200, ChronoUnit.MILLIS)

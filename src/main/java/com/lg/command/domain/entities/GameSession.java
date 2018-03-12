@@ -5,10 +5,7 @@ import com.lg.command.domain.events.NewGameSessionStarted;
 import com.lg.command.domain.events.PartnerJoinedGameSession;
 import com.lg.command.domain.events.PlayerTurned;
 import com.lg.command.domain.services.RollDice;
-import com.lg.command.domain.valueobjects.BackgammonGame;
-import com.lg.command.domain.valueobjects.PlayerColor;
-import com.lg.command.domain.valueobjects.ProvideBackgammonConfig;
-import com.lg.command.domain.valueobjects.Turn;
+import com.lg.command.domain.valueobjects.*;
 import com.lg.command.es.AggregateRoot;
 import com.lg.command.es.DomainEvent;
 import com.sun.javaws.exceptions.InvalidArgumentException;
@@ -21,7 +18,12 @@ public class GameSession extends AggregateRoot {
     private UUID playerBlack;
 
     private boolean isGameInProgress;
-    private BackgammonGame game;
+
+    private BackgammonBoard board;
+    private PlayerColor nextPlayerColor;
+    private Dice dice;
+
+    private BackgammonConfig backgammonConfig;
 
     public static GameSession startNewGameSession(String id, UUID playerId) throws Exception {
         GameSession newGameSession = new GameSession();
@@ -51,7 +53,7 @@ public class GameSession extends AggregateRoot {
         }
 
         apply(new PartnerJoinedGameSession(id, playerId));
-        apply(new GameStarted(id, gameConfig.provide(), rollDice.roll(), playerWhite, playerBlack));
+        apply(new GameStarted(id, gameConfig.provide(), rollDice.roll(), playerWhite, playerBlack, nextPlayerColor));
     }
 
     public void doTurn(UUID playerId, Turn turn, RollDice rollDice) throws Exception {
@@ -64,27 +66,24 @@ public class GameSession extends AggregateRoot {
             throw new IllegalStateException("GameSession isn't yet started.");
         }
 
-        StringBuilder out = new StringBuilder();
-        PlayerTurned e = game.canTurn(playerColor, turn, rollDice, out);
-
-        if (e == null) {
-            throw new IllegalArgumentException(String.format("This turn is illegal: %s", out.toString()));
+        if (nextPlayerColor != playerColor && nextPlayerColor != null) {
+            throw new IllegalStateException("It's another player's turn expected.");
         }
 
-        e.setGameId(getId());
-        apply(e);
-    }
+        BackgammonBoard resultBoard = board.tryTurn(playerColor, turn, new Steps(dice));
 
-    private PlayerColor getPlayerColorById(UUID playerId) {
-        if (playerWhite.equals(playerId)) {
-            return PlayerColor.WHITE;
+        if (resultBoard != null) {
+            apply(new PlayerTurned(
+                    id,
+                    playerColor,
+                    turn,
+                    rollDice.roll(),
+                    resultBoard.getPoints(),
+                    nextPlayerColor.next()
+            ));
+        } else {
+            throw new IllegalArgumentException("This turn isn't valid.");
         }
-
-        if (playerBlack.equals(playerId)) {
-            return PlayerColor.BLACK;
-        }
-
-        return null;
     }
 
     private void when(NewGameSessionStarted e) {
@@ -98,11 +97,28 @@ public class GameSession extends AggregateRoot {
 
     private void when(GameStarted e) {
         isGameInProgress = true;
-        game = new BackgammonGame(e.getGameConfig(), e.getDice());
+        backgammonConfig = e.getGameConfig();
+        board = new BackgammonBoard(e.getGameConfig());
+        dice = e.getDice();
+        nextPlayerColor = PlayerColor.WHITE;
     }
 
     private void when(PlayerTurned e) {
-        game.turn(e.getPlayerColor(), e.getTurn());
+        board = board.asIfTurned(e.getPlayerColor(), e.getTurn());
+        nextPlayerColor = e.getNextPlayerColor();
+        dice = e.getDice();
+    }
+
+    private PlayerColor getPlayerColorById(UUID playerId) {
+        if (playerWhite.equals(playerId)) {
+            return PlayerColor.WHITE;
+        }
+
+        if (playerBlack.equals(playerId)) {
+            return PlayerColor.BLACK;
+        }
+
+        return null;
     }
 
     public String getId() {

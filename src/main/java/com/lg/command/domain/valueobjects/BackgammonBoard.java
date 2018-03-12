@@ -1,7 +1,7 @@
 package com.lg.command.domain.valueobjects;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.lg.command.domain.valueobjects.PlayerColor.WHITE;
@@ -11,7 +11,25 @@ public class BackgammonBoard {
 
     private BoardPoint[] points;
 
-    private BackgammonBoard(BackgammonConfig config, BoardPoint[] points) {
+    public BackgammonBoard(BackgammonConfig config) {
+        if (config == null) {
+            throw new NullPointerException("Config must me valid config.");
+        }
+
+        this.config = config;
+
+        points = new BoardPoint[config.getPointsCount()];
+
+        // Set checkers to initial position
+        IntStream.range(0, config.getPointsCount()).forEach(i ->
+                points[i] = new BoardPoint(i,0   , null)
+        );
+
+        points[config.getWhiteStartPosition()] = new BoardPoint(config.getWhiteStartPosition(), config.getCheckersCount(), PlayerColor.WHITE);
+        points[config.getBlackStartPosition()] = new BoardPoint(config.getBlackStartPosition(), config.getCheckersCount(), PlayerColor.BLACK);
+    }
+
+    public BackgammonBoard(BackgammonConfig config, BoardPoint[] points) {
         if (config == null) {
             throw new NullPointerException("Config must me valid config.");
         }
@@ -28,29 +46,36 @@ public class BackgammonBoard {
         this.points = points;
     }
 
-    public BackgammonBoard(BackgammonConfig config) {
-        if (config == null) {
-            throw new NullPointerException("Config must me valid config.");
+    public BackgammonBoard tryTurn(PlayerColor playerColor, Turn turn, Steps steps) {
+        BackgammonBoard resultBoard = this.asIfTurned(playerColor, turn);
+        List<BackgammonBoard> possibleBoards = this.getPossibleBoardsForSteps(playerColor, steps);
+
+        if (possibleBoards.contains(resultBoard)) {
+            return resultBoard;
         }
 
-        this.config = config;
-
-        points = new BoardPoint[config.getPointsCount()];
-
-        // Set checkers to initial position
-        IntStream.range(0, config.getPointsCount()).forEach(i ->
-                points[i] = new BoardPoint(i,0   , null)
-        );
-
-        points[config.getWhiteStartPosition()] = new BoardPoint(getStartPosition(PlayerColor.WHITE), config.getCheckersCount(), PlayerColor.WHITE);
-        points[config.getBlackStartPosition()] = new BoardPoint(getStartPosition(PlayerColor.BLACK), config.getCheckersCount(), PlayerColor.BLACK);
+        return null;
     }
 
     public BoardPoint[] getPoints() {
         return points;
     }
 
-    public BackgammonBoard asIfMoved(PlayerColor playerColor, Move move) {
+    public BackgammonBoard asIfTurned(PlayerColor playerColor, Turn turn) {
+        BackgammonBoard result = this;
+
+        for (Move m : turn.getMoves()) {
+            BackgammonBoard nextBoard = result.asIfMoved(playerColor, m);
+            if (nextBoard == null) {
+                return null;
+            }
+            result = nextBoard;
+        }
+
+        return result;
+    } // Board + Turn = ? Board
+
+    private BackgammonBoard asIfMoved(PlayerColor playerColor, Move move) {
         if (!canMove(playerColor, move)) {
             return null;
         }
@@ -63,15 +88,60 @@ public class BackgammonBoard {
         newPoints[destinationIndex] = newPoints[destinationIndex].putChecker(playerColor);
 
         return new BackgammonBoard(config, newPoints);
-    }
+    } // Board + Move[] = ? Board
 
-    public boolean canMove(PlayerColor playerColor, Move move) {
+    private List<BackgammonBoard> getPossibleBoardsForSteps(PlayerColor playerColor, Steps steps) {
+        List<TurnCandidate> candidates = new ArrayList<>();
+        candidates.add(new TurnCandidate(new Turn(new Move[] {}), this));
+        TurnCandidate emptyTurnCandidate = new TurnCandidate(new Turn(new Move[] {}), this);
+
+        for (int[] combination : new int[][] {
+                new int[] {steps.get(0), steps.get(1)},
+                new int[] {steps.get(1), steps.get(0)}
+        }) {
+            for (int i = 0; i < config.getPointsCount(); i++) {
+                Move move1 = new Move(i, combination[0]);
+                BackgammonBoard nextBoard1 = this.asIfMoved(playerColor, move1);
+
+                if (nextBoard1 != null) {
+                    candidates.add(new TurnCandidate(new Turn(new Move[]{move1}), nextBoard1));
+
+                    for (int j = 0; j < config.getPointsCount(); j++) {
+                        Move move2 = new Move(j, combination[1]);
+
+                        BackgammonBoard nextBoard2 = nextBoard1.asIfMoved(playerColor, move2);
+                        if (nextBoard2 != null) {
+                            candidates.add(new TurnCandidate(new Turn(new Move[]{move1, move2}), nextBoard2));
+                        }
+                    }
+                }
+            }
+        }
+//        } else if(steps.length == 4) {
+//            // calculate here for double dice
+//        }
+
+        TurnCandidate longestCandidate = candidates.stream()
+                .max(Comparator.comparingInt(o -> o.getTurn().getTotalSteps()))
+                .orElse(emptyTurnCandidate);
+
+        int longest = longestCandidate.getTurn().getTotalSteps();
+
+        return candidates.stream()
+                .filter(x -> x.getTurn().getTotalSteps() == longest)
+                .map(TurnCandidate::getBoard)
+                .distinct()
+                .collect(Collectors.toList());
+    } // f(board, steps) = Turn[] or Board[]
+
+    private boolean canMove(PlayerColor playerColor, Move move) {
         BoardPoint fromPoint = points[move.getFrom()];
         if (fromPoint.getPlayerColor() != playerColor) {
             return false;
         }
 
-        int checkerTotalStepsDone = (move.getFrom() - getStartPosition(playerColor) + config.getPointsCount()) % config.getPointsCount();
+        int playerStartPosition = playerColor == WHITE ? config.getWhiteStartPosition() : config.getBlackStartPosition();
+        int checkerTotalStepsDone = (move.getFrom() - playerStartPosition + config.getPointsCount()) % config.getPointsCount();
 
         // If checker finishes its round and gets removed, all other player checkers need to be in dome
         if (checkerTotalStepsDone + move.getSteps() >= config.getPointsCount()) {
@@ -87,24 +157,6 @@ public class BackgammonBoard {
         return toPoint.getPlayerColor() == playerColor || toPoint.getPlayerColor() == null;
     }
 
-    public BackgammonBoard asIfTurned(PlayerColor playerColor, Turn turn) {
-        BackgammonBoard result = this;
-
-        for (Move m : turn.getMoves()) {
-            result = result.asIfMoved(playerColor, m);
-        }
-
-        return result;
-    }
-
-    private int getStartPosition(PlayerColor playerColor) {
-        if (playerColor == WHITE){
-            return config.getWhiteStartPosition();
-        }
-
-        return config.getBlackStartPosition();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,7 +168,6 @@ public class BackgammonBoard {
 
     @Override
     public int hashCode() {
-
         int result = Objects.hash(config);
         result = 31 * result + Arrays.hashCode(points);
         return result;

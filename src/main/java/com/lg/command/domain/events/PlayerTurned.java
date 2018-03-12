@@ -1,6 +1,9 @@
 package com.lg.command.domain.events;
 
-import com.lg.command.domain.valueobjects.*;
+import com.lg.command.domain.valueobjects.BoardPoint;
+import com.lg.command.domain.valueobjects.Dice;
+import com.lg.command.domain.valueobjects.PlayerColor;
+import com.lg.command.domain.valueobjects.Turn;
 import com.lg.command.es.DomainEvent;
 
 import java.util.Date;
@@ -8,8 +11,9 @@ import java.util.Date;
 public class PlayerTurned implements DomainEvent {
     private String gameId;
     private Turn turn;
-    private Dice dice; // <---- maybe have it as separate event like PlayerRolledDice
+    private Dice dice;
     private PlayerColor playerColor;
+    private PlayerColor nextPlayerColor;
     private BoardPoint[] boardPoints;
 
     private int version;
@@ -18,11 +22,13 @@ public class PlayerTurned implements DomainEvent {
     public PlayerTurned() {
     }
 
-    public PlayerTurned(PlayerColor playerColor, Turn turn, Dice dice, BoardPoint[] boardPoints) {
+    public PlayerTurned(String gameId, PlayerColor playerColor, Turn turn, Dice dice, BoardPoint[] boardPoints, PlayerColor nextPlayerColor) {
+        this.gameId = gameId;
         this.playerColor = playerColor;
         this.turn = turn;
         this.dice = dice;
         this.boardPoints = boardPoints;
+        this.nextPlayerColor = nextPlayerColor;
 
         this.version = 1;
         this.happenedOn = new Date();
@@ -60,5 +66,9 @@ public class PlayerTurned implements DomainEvent {
 
     public BoardPoint[] getBoardPoints() {
         return boardPoints;
+    }
+
+    public PlayerColor getNextPlayerColor() {
+        return nextPlayerColor;
     }
 }
