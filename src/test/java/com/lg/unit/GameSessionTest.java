@@ -6,7 +6,6 @@ import com.lg.command.domain.events.NewGameSessionStarted;
 import com.lg.command.domain.events.PartnerJoinedGameSession;
 import com.lg.command.domain.events.PlayerTurned;
 import com.lg.command.domain.services.RollDice;
-import com.lg.command.domain.services.RollDiceService;
 import com.lg.command.domain.valueobjects.*;
 import com.lg.command.es.DomainEvent;
 import junit.framework.Test;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.*;
 
@@ -38,17 +36,15 @@ public class GameSessionTest extends TestCase {
         String gameId = UUID.randomUUID().toString();
         UUID player1Id = UUID.randomUUID();
 
-        RollDiceService rollDice = mock(RollDiceService.class);
-
         // Act
         GameSession target = GameSession.startNewGameSession(gameId, player1Id);
 
         // Assert
         List<DomainEvent> events = target.flush();
         Assert.assertEquals(events.size(), 1);
-        Assert.assertTrue(events.get(0) instanceof NewGameSessionStarted);
 
         NewGameSessionStarted e1 = (NewGameSessionStarted)events.get(0);
+        Assert.assertNotNull(e1);
 
         Assert.assertEquals(e1.getByPlayerId(), player1Id);
         Assert.assertEquals(e1.getGameId(), gameId);
@@ -76,22 +72,24 @@ public class GameSessionTest extends TestCase {
 
         // Assert
         List<DomainEvent> events = target.flush();
+
         Assert.assertEquals(events.size(), 2);
-        Assert.assertTrue(events.get(0) instanceof PartnerJoinedGameSession);
-        Assert.assertTrue(events.get(1) instanceof GameStarted);
 
         PartnerJoinedGameSession e1 = (PartnerJoinedGameSession)events.get(0);
         GameStarted e2 = (GameStarted)events.get(1);
 
-        verify(rollDice).roll();
-
+        Assert.assertNotNull(e1);
         Assert.assertEquals(e1.getPlayerId(), player2Id);
         Assert.assertEquals(e1.getGameId(), gameId);
+
+        Assert.assertNotNull(e2);
         Assert.assertEquals(e2.getDice(), dice);
         Assert.assertEquals(e2.getWhitePlayerId(), player1Id);
         Assert.assertEquals(e2.getBlackPlayerId(), player2Id);
         Assert.assertEquals(e2.getGameConfig(), config);
         Assert.assertEquals(e2.getNextPlayerColor(), PlayerColor.WHITE);
+
+        verify(rollDice).roll();
     }
 
     public void test_When_player1_valid_turns_after_game_start_Should_turn_happen() throws Exception {
@@ -99,42 +97,38 @@ public class GameSessionTest extends TestCase {
         String gameId = UUID.randomUUID().toString();
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
-        RollDice rollDice = mock(RollDice.class);
-        ProvideBackgammonConfig provideConfig = mock(ProvideBackgammonConfig.class);
 
+        RollDice rollDice = mock(RollDice.class);
         Dice dice = new Dice(5, 2);
         when(rollDice.roll()).thenReturn(dice);
+
+        ProvideBackgammonConfig provideConfig = mock(ProvideBackgammonConfig.class);
         BackgammonConfig backgammonConfig = new BackgammonConfig(15, 24, 0, 12, 6);
         when(provideConfig.provide()).thenReturn(backgammonConfig);
 
         GameSession target = GameSession.startNewGameSession(gameId, player1Id);
-
         target.joinGameSession(player2Id, rollDice, provideConfig);
         target.flush();
 
+        // Act
         Turn turn = new Turn(new Move[] {
                 new Move(0, dice.getOne()),
                 new Move(0, dice.getTwo())});
-
-        // Act
         target.doTurn(player1Id, turn, rollDice);
 
         // Assert
         List<DomainEvent> events = target.flush();
         Assert.assertEquals(events.size(), 1);
-        Assert.assertTrue(events.get(0) instanceof PlayerTurned);
 
         PlayerTurned e1 = (PlayerTurned)events.get(0);
-
-        verify(rollDice, times(2)).roll();
-
+        Assert.assertNotNull(e1);
         Assert.assertEquals(e1.getGameId(), gameId);
         Assert.assertEquals(e1.getPlayerColor(), PlayerColor.WHITE);
         Assert.assertEquals(e1.getTurn(), turn);
         Assert.assertEquals(e1.getNextPlayerColor(), PlayerColor.BLACK);
 
         ArrayList<BoardPoint> resultPoints = new ArrayList<>(Arrays.asList(e1.getBoardPoints()));
-        new ArrayList<>(Arrays.asList(new BoardPoint[]  {
+        new ArrayList<>(Arrays.asList(
                 new BoardPoint(0, 13, PlayerColor.WHITE),
                 new BoardPoint(1, 0, null),
                 new BoardPoint(2, 1, PlayerColor.WHITE),
@@ -158,12 +152,12 @@ public class GameSessionTest extends TestCase {
                 new BoardPoint(20, 0, null),
                 new BoardPoint(21, 0, null),
                 new BoardPoint(22, 0, null),
-                new BoardPoint(23, 0, null)
-        })).forEach(x -> {
-            Assert.assertTrue(resultPoints.contains(x));
-        });
+                new BoardPoint(23, 0, null)))
+        .forEach(x -> Assert.assertTrue(resultPoints.contains(x)));
 
         Assert.assertEquals(e1.getBoardPoints().length, backgammonConfig.getPointsCount());
+
+        verify(rollDice, times(2)).roll();
     }
 }
 
