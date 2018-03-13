@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.lg.command.domain.valueobjects.PlayerColor.BLACK;
 import static com.lg.command.domain.valueobjects.PlayerColor.WHITE;
 
 public class BackgammonBoard {
@@ -81,11 +82,19 @@ public class BackgammonBoard {
         }
 
         int destinationIndex = (move.getFrom() + move.getSteps()) % config.getPointsCount();
-
         BoardPoint[] newPoints = points.clone();
 
         newPoints[move.getFrom()] = newPoints[move.getFrom()].pickChecker();
-        newPoints[destinationIndex] = newPoints[destinationIndex].putChecker(playerColor);
+
+        int playerStartPosition = playerColor == WHITE ? config.getWhiteStartPosition() : config.getBlackStartPosition();
+        int checkerTotalStepsDone = (move.getFrom() - playerStartPosition + config.getPointsCount()) % config.getPointsCount();
+
+        // If checker finishes its round and gets removed, all other player checkers need to be in dome
+        if (checkerTotalStepsDone + move.getSteps() < config.getPointsCount()) {
+            newPoints[destinationIndex] = newPoints[destinationIndex].putChecker(playerColor);
+        }
+
+
 
         return new BackgammonBoard(config, newPoints);
     } // Board + Move[] = ? Board
@@ -157,6 +166,10 @@ public class BackgammonBoard {
         return toPoint.getPlayerColor() == playerColor || toPoint.getPlayerColor() == null;
     }
 
+    public BackgammonConfig getConfig() {
+        return config;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,5 +184,15 @@ public class BackgammonBoard {
         int result = Objects.hash(config);
         result = 31 * result + Arrays.hashCode(points);
         return result;
+    }
+
+    public PlayerColor getWinner() {
+        if (Arrays.stream(points).allMatch(x -> x.getPlayerColor() != WHITE)) {
+            return WHITE;
+        } else if (Arrays.stream(points).allMatch(x -> x.getPlayerColor() != BLACK)) {
+            return BLACK;
+        }
+
+        return null;
     }
 }

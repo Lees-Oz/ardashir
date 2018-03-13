@@ -1,9 +1,6 @@
 package com.lg.command.domain.entities;
 
-import com.lg.command.domain.events.GameStarted;
-import com.lg.command.domain.events.NewGameSessionStarted;
-import com.lg.command.domain.events.PartnerJoinedGameSession;
-import com.lg.command.domain.events.PlayerTurned;
+import com.lg.command.domain.events.*;
 import com.lg.command.domain.services.RollDice;
 import com.lg.command.domain.valueobjects.*;
 import com.lg.command.es.AggregateRoot;
@@ -17,13 +14,12 @@ public class GameSession extends AggregateRoot {
     private UUID playerWhite;
     private UUID playerBlack;
 
-    private boolean isGameInProgress;
+    private boolean isGameStarted;
+    private boolean isGameFinished;
 
     private BackgammonBoard board;
     private PlayerColor nextPlayerColor;
     private Dice dice;
-
-    private BackgammonConfig backgammonConfig;
 
     public static GameSession startNewGameSession(String id, UUID playerId) throws Exception {
         GameSession newGameSession = new GameSession();
@@ -44,7 +40,11 @@ public class GameSession extends AggregateRoot {
             return;
         }
 
-        if (isGameInProgress) {
+        if(isGameFinished) {
+            throw new IllegalStateException("Game is finished.");
+        }
+
+        if (isGameStarted) {
             throw new IllegalStateException("GameSession is already started.");
         }
 
@@ -62,7 +62,11 @@ public class GameSession extends AggregateRoot {
             throw new InvalidArgumentException(new String[]{"Such player doesn't exist."});
         }
 
-        if (!this.isGameInProgress) {
+        if(isGameFinished) {
+            throw new IllegalStateException("Game is finished.");
+        }
+
+        if (!this.isGameStarted) {
             throw new IllegalStateException("GameSession isn't yet started.");
         }
 
@@ -84,6 +88,14 @@ public class GameSession extends AggregateRoot {
         } else {
             throw new IllegalArgumentException("This turn isn't valid.");
         }
+
+        PlayerColor winnerPlayerColor = resultBoard.getWinner();
+        if(winnerPlayerColor != null) {
+            apply(new GameFinished(
+                    id,
+                    winnerPlayerColor
+            ));
+        }
     }
 
     private void when(NewGameSessionStarted e) {
@@ -96,8 +108,7 @@ public class GameSession extends AggregateRoot {
     }
 
     private void when(GameStarted e) {
-        isGameInProgress = true;
-        backgammonConfig = e.getGameConfig();
+        isGameStarted = true;
         board = new BackgammonBoard(e.getGameConfig());
         dice = e.getDice();
         nextPlayerColor = PlayerColor.WHITE;
@@ -107,6 +118,10 @@ public class GameSession extends AggregateRoot {
         board = board.asIfTurned(e.getPlayerColor(), e.getTurn());
         nextPlayerColor = e.getNextPlayerColor();
         dice = e.getDice();
+    }
+
+    private void when(GameFinished e) {
+        isGameFinished = true;
     }
 
     private PlayerColor getPlayerColorById(UUID playerId) {
