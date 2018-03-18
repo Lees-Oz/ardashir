@@ -21,6 +21,6 @@ public class CommandController implements Route  {
         this.commandProcessor.process(request.params(":name"), request.body());
 
         response.status(200);
-        return response;
+        return "";
     }
 }
