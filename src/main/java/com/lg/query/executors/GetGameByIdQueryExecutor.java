@@ -19,7 +19,7 @@ public class GetGameByIdQueryExecutor implements ExecuteQuery<GetGameById> {
 
     @Override
     public GetGameByIdResult execute(GetGameById query) throws ExecutionException, InterruptedException, IOException {
-        Object games = this.projection.getPartition(GetGameByIdResult.class, "games", query.getGameId());
-        return (GetGameByIdResult) games;
+        Object game = this.projection.getPartition(GetGameByIdResult.class, "games", query.getGameId());
+        return (GetGameByIdResult) game;
     }
 }

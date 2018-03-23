@@ -3,10 +3,8 @@ package com.lg.query.projections;
 import com.evanlennick.retry4j.CallExecutor;
 import com.evanlennick.retry4j.config.RetryConfig;
 import com.evanlennick.retry4j.config.RetryConfigBuilder;
-import com.github.msemys.esjc.projection.CreateOptions;
-import com.github.msemys.esjc.projection.ProjectionException;
+import com.github.msemys.esjc.projection.*;
 import com.github.msemys.esjc.projection.ProjectionManager;
-import com.github.msemys.esjc.projection.ProjectionMode;
 import com.lg.utils.SerializeJson;
 
 import javax.inject.Inject;
@@ -64,14 +62,14 @@ public class Projection implements com.lg.query.projections.ProjectionManager {
             if (a.isPresent()) {
                 System.out.println("Trying to disable and delete projection " + projectionName);
                 projections.disable(projectionName).get();
-                projections.delete(projectionName).get();
+                projections.delete(projectionName, DeleteOptions.ALL).get();
             }
 
             new CallExecutor(config).execute(() -> {
                 System.out.println("Trying create projection " + projectionName);
                 projections.create(projectionName, content, CreateOptions.newBuilder()
                             .mode(ProjectionMode.CONTINUOUS)
-                            .emit(true)
+                            .emit(false)
                             .enabled(true)
                             .checkpoints(false)
                             .trackEmittedStreams(false)

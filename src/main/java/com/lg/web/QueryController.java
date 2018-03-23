@@ -22,6 +22,11 @@ public class QueryController implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
         Object result = queryProcessor.process(request.params(":name"), request.body());
+
+        if(result == null) {
+            response.status(404);
+        }
+
         return serializer.serialize(result);
     }
 }

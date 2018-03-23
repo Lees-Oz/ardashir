@@ -25,6 +25,8 @@ import com.lg.query.QueryProcessor;
 import com.lg.query.projections.Projection;
 import com.lg.utils.JsonSerializer;
 import com.lg.utils.SerializeJson;
+import com.lg.web.HandleWebsocket;
+import com.lg.web.WebSocketHandler;
 
 import java.time.Duration;
 
@@ -47,6 +49,9 @@ public class GuiceModule extends AbstractModule {
         // Domain
         bind(RollDice.class).to(RollDiceService.class);
         bind(ProvideBackgammonConfig.class).to(BackgammonConfigProvider.class);
+
+        // Websocket
+        bind(HandleWebsocket.class).to(WebSocketHandler.class);
     }
 
     @Provides
