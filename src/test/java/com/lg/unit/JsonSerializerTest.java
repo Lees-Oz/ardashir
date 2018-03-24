@@ -1,6 +1,7 @@
 package com.lg.unit;
 
 import com.lg.command.domain.events.NewGameSessionStarted;
+import com.lg.command.domain.valueobjects.BackgammonConfig;
 import com.lg.command.es.DomainEvent;
 import com.lg.utils.JsonSerializer;
 import junit.framework.Test;
@@ -47,7 +48,7 @@ public class JsonSerializerTest extends TestCase {
     public void test_When_serialize_object_Should_serialize() throws Exception {
         // Arrange
         JsonSerializer target = new JsonSerializer();
-        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID());
+        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID(), new BackgammonConfig());
 
         // Act
         String result = target.serialize(arg);
@@ -81,7 +82,7 @@ public class JsonSerializerTest extends TestCase {
     public void test_When_serialize_and_deserialize_object_Should_result_in_equivalent_object() throws Exception {
         // Arrange
         JsonSerializer target = new JsonSerializer();
-        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID());
+        NewGameSessionStarted arg = new NewGameSessionStarted(UUID.randomUUID().toString(), UUID.randomUUID(), new BackgammonConfig(15, 24, 0, 12, 6));
 
         // Act
         String resultString = target.serialize(arg);

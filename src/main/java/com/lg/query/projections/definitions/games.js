@@ -9,15 +9,16 @@ fromCategory("game")
 
             s.id = body.gameId;
             s.whitePlayerId = body.byPlayerId;
+            s.status = "waitingPartner"
         },
         "GameStarted": function(s, e) {
             var body = JSON.parse(e.bodyRaw);
 
             s.config = body.config;
             s.dice = body.dice;
-
             s.blackPlayerId = body.blackPlayerId;
-            s.boardPoints = [];
+            s.boardPoints = body.boardPoints;
+            s.status = "started";
         },
         "PlayerTurned": function(s, e) {
             var body = JSON.parse(e.bodyRaw);

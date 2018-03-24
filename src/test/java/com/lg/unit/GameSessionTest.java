@@ -35,9 +35,12 @@ public class GameSessionTest extends TestCase {
         // Arrange
         String gameId = UUID.randomUUID().toString();
         UUID player1Id = UUID.randomUUID();
+        ProvideBackgammonConfig configProvider = mock(ProvideBackgammonConfig.class);
+        BackgammonConfig config = new BackgammonConfig();
+        when(configProvider.provide()).thenReturn(config);
 
         // Act
-        GameSession target = GameSession.startNewGameSession(gameId, player1Id);
+        GameSession target = GameSession.startNewGameSession(gameId, player1Id, configProvider);
 
         // Assert
         List<DomainEvent> events = target.flush();
@@ -48,6 +51,7 @@ public class GameSessionTest extends TestCase {
 
         Assert.assertEquals(e1.getByPlayerId(), player1Id);
         Assert.assertEquals(e1.getGameId(), gameId);
+        Assert.assertEquals(e1.getGameConfig(), config);
     }
 
     public void test_When_join_to_registered_game_Should_join_and_start() throws Exception {
@@ -64,11 +68,11 @@ public class GameSessionTest extends TestCase {
         BackgammonConfig config = new BackgammonConfig(15, 24, 0, 12, 6);
         when(provideConfig.provide()).thenReturn(config);
 
-        GameSession target = GameSession.startNewGameSession(gameId, player1Id);
+        GameSession target = GameSession.startNewGameSession(gameId, player1Id, provideConfig);
         target.flush();
 
         // Act
-        target.joinGameSession(player2Id, rollDice, provideConfig);
+        target.joinGameSession(player2Id, rollDice);
 
         // Assert
         List<DomainEvent> events = target.flush();
@@ -86,7 +90,6 @@ public class GameSessionTest extends TestCase {
         Assert.assertEquals(e2.getDice(), dice);
         Assert.assertEquals(e2.getWhitePlayerId(), player1Id);
         Assert.assertEquals(e2.getBlackPlayerId(), player2Id);
-        Assert.assertEquals(e2.getGameConfig(), config);
         Assert.assertEquals(e2.getNextPlayerColor(), PlayerColor.WHITE);
 
         verify(rollDice).roll();
@@ -106,8 +109,8 @@ public class GameSessionTest extends TestCase {
         BackgammonConfig backgammonConfig = new BackgammonConfig(15, 24, 0, 12, 6);
         when(provideConfig.provide()).thenReturn(backgammonConfig);
 
-        GameSession target = GameSession.startNewGameSession(gameId, player1Id);
-        target.joinGameSession(player2Id, rollDice, provideConfig);
+        GameSession target = GameSession.startNewGameSession(gameId, player1Id, provideConfig);
+        target.joinGameSession(player2Id, rollDice);
         target.flush();
 
         // Act

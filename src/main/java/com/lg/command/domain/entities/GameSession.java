@@ -21,9 +21,9 @@ public class GameSession extends AggregateRoot {
     private PlayerColor nextPlayerColor;
     private Dice dice;
 
-    public static GameSession startNewGameSession(String id, UUID playerId) throws Exception {
+    public static GameSession startNewGameSession(String id, UUID playerId, ProvideBackgammonConfig gameConfig) throws Exception {
         GameSession newGameSession = new GameSession();
-        newGameSession.apply(new NewGameSessionStarted(id, playerId));
+        newGameSession.apply(new NewGameSessionStarted(id, playerId, gameConfig.provide()));
 
         return newGameSession;
     }
@@ -35,7 +35,7 @@ public class GameSession extends AggregateRoot {
         super(eventStream, version);
     }
 
-    public void joinGameSession(UUID playerId, RollDice rollDice, ProvideBackgammonConfig gameConfig) throws Exception {
+    public void joinGameSession(UUID playerId, RollDice rollDice) throws Exception {
         if (playerBlack == playerId) {
             return;
         }
@@ -53,7 +53,7 @@ public class GameSession extends AggregateRoot {
         }
 
         apply(new PartnerJoinedGameSession(id, playerId));
-        apply(new GameStarted(id, gameConfig.provide(), rollDice.roll(), playerWhite, playerBlack, nextPlayerColor));
+        apply(new GameStarted(id, rollDice.roll(), playerWhite, playerBlack, nextPlayerColor, board.getPoints()));
     }
 
     public void doTurn(UUID playerId, Turn turn, RollDice rollDice) throws Exception {
@@ -101,6 +101,7 @@ public class GameSession extends AggregateRoot {
     private void when(NewGameSessionStarted e) {
         id = e.getGameId();
         playerWhite = e.getByPlayerId();
+        board = new BackgammonBoard(e.getGameConfig());
     }
 
     private void when(PartnerJoinedGameSession e) {
@@ -109,7 +110,7 @@ public class GameSession extends AggregateRoot {
 
     private void when(GameStarted e) {
         isGameStarted = true;
-        board = new BackgammonBoard(e.getGameConfig());
+
         dice = e.getDice();
         nextPlayerColor = PlayerColor.WHITE;
     }

@@ -13,19 +13,17 @@ public class JoinGameCommandExecutor implements ExecuteCommand<JoinGame> {
 
     private GameRepository repo;
     private RollDice rollDice;
-    private ProvideBackgammonConfig gameConfig;
 
     @Inject
-    public JoinGameCommandExecutor(GameRepository repo, RollDice rollDice, ProvideBackgammonConfig gameConfig) {
+    public JoinGameCommandExecutor(GameRepository repo, RollDice rollDice) {
         this.repo = repo;
         this.rollDice = rollDice;
-        this.gameConfig = gameConfig;
     }
 
     @Override
     public void execute(JoinGame command) throws Exception {
         GameSession game = repo.get(command.getGameId());
-        game.joinGameSession(command.getPlayerId(), this.rollDice, this.gameConfig);
+        game.joinGameSession(command.getPlayerId(), this.rollDice);
         this.repo.save(game);
     }
 }

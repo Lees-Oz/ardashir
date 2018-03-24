@@ -1,6 +1,6 @@
 package com.lg.command.domain.events;
 
-import com.lg.command.domain.valueobjects.BackgammonConfig;
+import com.lg.command.domain.valueobjects.BoardPoint;
 import com.lg.command.domain.valueobjects.Dice;
 import com.lg.command.domain.valueobjects.PlayerColor;
 import com.lg.command.es.DomainEvent;
@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class GameStarted implements DomainEvent {
     private String gameId;
-    private BackgammonConfig gameConfig;
     private Dice dice;
     private UUID whitePlayerId;
     private UUID blackPlayerId;
     private PlayerColor nextPlayerColor;
+    private BoardPoint[] boardPoints;
 
     private int version;
     private Date happenedOn;
@@ -22,13 +22,13 @@ public class GameStarted implements DomainEvent {
     public GameStarted() {
     }
 
-    public GameStarted(String gameId, BackgammonConfig gameConfig, Dice dice, UUID whitePlayerId, UUID blackPlayerId, PlayerColor nextPlayerColor) {
+    public GameStarted(String gameId, Dice dice, UUID whitePlayerId, UUID blackPlayerId, PlayerColor nextPlayerColor, BoardPoint[] boardPoints) {
         this.gameId = gameId;
-        this.gameConfig = gameConfig;
         this.dice = dice;
         this.whitePlayerId = whitePlayerId;
         this.blackPlayerId = blackPlayerId;
         this.nextPlayerColor = nextPlayerColor;
+        this.boardPoints = boardPoints;
 
         this.version = 1;
         this.happenedOn = new Date();
@@ -61,11 +61,11 @@ public class GameStarted implements DomainEvent {
         return blackPlayerId;
     }
 
-    public BackgammonConfig getGameConfig() {
-        return gameConfig;
-    }
-
     public PlayerColor getNextPlayerColor() {
         return nextPlayerColor;
+    }
+
+    public BoardPoint[] getBoardPoints() {
+        return boardPoints;
     }
 }

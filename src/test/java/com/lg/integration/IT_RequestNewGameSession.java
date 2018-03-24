@@ -35,9 +35,15 @@ public class IT_RequestNewGameSession {
         client.command(requestNewGameCmd);
 
         // Assert
-        client.query(GetMyGameResult.class, new GetMyGame(playerId), x -> {
+        String gameId = client.query(GetMyGameResult.class, new GetMyGame(playerId), x -> {
             Assert.assertNotNull(x);
             Assert.assertNotNull(x.getGameId());
+        }).getGameId();
+
+        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
+            Assert.assertEquals(x.getWhitePlayerId(), playerId);
+            Assert.assertEquals(x.getBlackPlayerId(), null);
+            Assert.assertEquals(x.getStatus(), "waitingPartner");
         });
     }
 
@@ -63,6 +69,7 @@ public class IT_RequestNewGameSession {
         client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
             Assert.assertEquals(x.getWhitePlayerId(), player1Id);
             Assert.assertEquals(x.getBlackPlayerId(), player2Id);
+            Assert.assertEquals(x.getStatus(), "started");
         });
     }
 
@@ -79,15 +86,13 @@ public class IT_RequestNewGameSession {
         client.command(new JoinGame(gameId, player2Id));
 
         // Get my dice
-        final Dice[] dice = new Dice[1];
-        client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
+        Dice dice = client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
             Assert.assertNotNull(x);
             Assert.assertNotNull(x.getDice());
-            dice[0] = x.getDice();
-        });
+        }).getDice();
 
         // Act
-        client.command(new DoTurn(gameId, player1Id, new Turn(new Move[] { new Move(0, dice[0].getOne()), new Move(0, dice[0].getTwo())})));
+        client.command(new DoTurn(gameId, player1Id, new Turn(new Move[] { new Move(0, dice.getOne()), new Move(0, dice.getTwo())})));
 
         // Assert
         client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {
