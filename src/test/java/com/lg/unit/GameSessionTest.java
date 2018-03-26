@@ -90,7 +90,7 @@ public class GameSessionTest extends TestCase {
         Assert.assertEquals(e2.getDice(), dice);
         Assert.assertEquals(e2.getWhitePlayerId(), player1Id);
         Assert.assertEquals(e2.getBlackPlayerId(), player2Id);
-        Assert.assertEquals(e2.getNextPlayerColor(), PlayerColor.WHITE);
+        Assert.assertEquals(e2.getNextPlayerId(), player1Id);
 
         verify(rollDice).roll();
     }
@@ -126,9 +126,9 @@ public class GameSessionTest extends TestCase {
         PlayerTurned e1 = (PlayerTurned)events.get(0);
         Assert.assertNotNull(e1);
         Assert.assertEquals(e1.getGameId(), gameId);
-        Assert.assertEquals(e1.getPlayerColor(), PlayerColor.WHITE);
+        Assert.assertEquals(e1.getPlayerId(), player1Id);
         Assert.assertEquals(e1.getTurn(), turn);
-        Assert.assertEquals(e1.getNextPlayerColor(), PlayerColor.BLACK);
+        Assert.assertEquals(e1.getNextPlayerId(), player2Id);
 
         ArrayList<BoardPoint> resultPoints = new ArrayList<>(Arrays.asList(e1.getBoardPoints()));
         new ArrayList<>(Arrays.asList(

@@ -7,13 +7,14 @@ import com.lg.command.domain.valueobjects.Turn;
 import com.lg.command.es.DomainEvent;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class PlayerTurned implements DomainEvent {
     private String gameId;
     private Turn turn;
     private Dice dice;
-    private PlayerColor playerColor;
-    private PlayerColor nextPlayerColor;
+    private UUID playerId;
+    private UUID nextPlayerId;
     private BoardPoint[] boardPoints;
 
     private int version;
@@ -22,13 +23,13 @@ public class PlayerTurned implements DomainEvent {
     public PlayerTurned() {
     }
 
-    public PlayerTurned(String gameId, PlayerColor playerColor, Turn turn, Dice dice, BoardPoint[] boardPoints, PlayerColor nextPlayerColor) {
+    public PlayerTurned(String gameId, UUID playerId, Turn turn, Dice dice, BoardPoint[] boardPoints, UUID nextPlayerId) {
         this.gameId = gameId;
-        this.playerColor = playerColor;
+        this.playerId = playerId;
         this.turn = turn;
         this.dice = dice;
         this.boardPoints = boardPoints;
-        this.nextPlayerColor = nextPlayerColor;
+        this.nextPlayerId = nextPlayerId;
 
         this.version = 1;
         this.happenedOn = new Date();
@@ -46,8 +47,8 @@ public class PlayerTurned implements DomainEvent {
         return dice;
     }
 
-    public PlayerColor getPlayerColor() {
-        return playerColor;
+    public UUID getPlayerId() {
+        return playerId;
     }
 
     @Override
@@ -68,7 +69,7 @@ public class PlayerTurned implements DomainEvent {
         return boardPoints;
     }
 
-    public PlayerColor getNextPlayerColor() {
-        return nextPlayerColor;
+    public UUID getNextPlayerId() {
+        return nextPlayerId;
     }
 }

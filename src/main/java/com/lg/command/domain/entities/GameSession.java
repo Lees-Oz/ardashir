@@ -18,7 +18,7 @@ public class GameSession extends AggregateRoot {
     private boolean isGameFinished;
 
     private BackgammonBoard board;
-    private PlayerColor nextPlayerColor;
+    private UUID nextPlayerId;
     private Dice dice;
 
     public static GameSession startNewGameSession(String id, UUID playerId, ProvideBackgammonConfig gameConfig) throws Exception {
@@ -53,7 +53,7 @@ public class GameSession extends AggregateRoot {
         }
 
         apply(new PartnerJoinedGameSession(id, playerId));
-        apply(new GameStarted(id, rollDice.roll(), playerWhite, playerBlack, nextPlayerColor, board.getPoints()));
+        apply(new GameStarted(id, rollDice.roll(), playerWhite, playerBlack, playerWhite, board.getPoints()));
     }
 
     public void doTurn(UUID playerId, Turn turn, RollDice rollDice) throws Exception {
@@ -70,24 +70,24 @@ public class GameSession extends AggregateRoot {
             throw new IllegalStateException("GameSession isn't yet started.");
         }
 
-        if (nextPlayerColor != playerColor && nextPlayerColor != null) {
+        if (!nextPlayerId.equals(playerId)) {
             throw new IllegalStateException("It's another player's turn expected.");
         }
 
         BackgammonBoard resultBoard = board.tryTurn(playerColor, turn, new Steps(dice));
 
-        if (resultBoard != null) {
-            apply(new PlayerTurned(
-                    id,
-                    playerColor,
-                    turn,
-                    rollDice.roll(),
-                    resultBoard.getPoints(),
-                    nextPlayerColor.next()
-            ));
-        } else {
+        if (resultBoard == null) {
             throw new IllegalArgumentException("This turn isn't valid.");
         }
+
+        apply(new PlayerTurned(
+                id,
+                playerId,
+                turn,
+                rollDice.roll(),
+                resultBoard.getPoints(),
+                this.getOtherPlayer(playerId)
+        ));
 
         PlayerColor winnerPlayerColor = resultBoard.getWinner();
         if(winnerPlayerColor != null) {
@@ -112,17 +112,24 @@ public class GameSession extends AggregateRoot {
         isGameStarted = true;
 
         dice = e.getDice();
-        nextPlayerColor = PlayerColor.WHITE;
+        nextPlayerId = this.playerWhite;
     }
 
     private void when(PlayerTurned e) {
-        board = board.asIfTurned(e.getPlayerColor(), e.getTurn());
-        nextPlayerColor = e.getNextPlayerColor();
+        board = new BackgammonBoard(board.getConfig(), e.getBoardPoints());
+        nextPlayerId = e.getNextPlayerId();
         dice = e.getDice();
     }
 
     private void when(GameFinished e) {
         isGameFinished = true;
+    }
+
+    private UUID getOtherPlayer(UUID playerId) {
+        if (playerId == playerWhite) {
+            return playerBlack;
+        }
+        return playerWhite;
     }
 
     private PlayerColor getPlayerColorById(UUID playerId) {

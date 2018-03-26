@@ -16,6 +16,7 @@ fromCategory("game")
 
             s.config = body.config;
             s.dice = body.dice;
+            s.nextPlayerId = body.nextPlayerId;
             s.blackPlayerId = body.blackPlayerId;
             s.boardPoints = body.boardPoints;
             s.status = "started";
@@ -25,5 +26,6 @@ fromCategory("game")
 
             s.dice = body.dice;
             s.boardPoints = body.boardPoints;
+            s.nextPlayerId = body.nextPlayerId;
         }
     })
