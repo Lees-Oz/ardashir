@@ -1,5 +1,6 @@
 package com.lg.integration;
 
+import com.google.common.collect.ImmutableList;
 import com.lg.command.domain.valueobjects.Dice;
 import com.lg.command.domain.valueobjects.Move;
 import com.lg.command.domain.valueobjects.Turn;
@@ -92,7 +93,12 @@ public class IT_RequestNewGameSession {
         }).getDice();
 
         // Act
-        client.command(new DoTurn(gameId, player1Id, new Turn(new Move[] { new Move(0, dice.getOne()), new Move(0, dice.getTwo())})));
+        client.command(new DoTurn(
+                gameId,
+                player1Id,
+                new Turn(ImmutableList.of(
+                        new Move(0, dice.getOne()),
+                        new Move(0, dice.getTwo())))));
 
         // Assert
         client.query(GetGameByIdResult.class, new GetGameById(gameId), x -> {

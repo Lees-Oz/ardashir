@@ -1,5 +1,7 @@
 package com.lg.command.domain.valueobjects;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -94,15 +96,15 @@ public class BackgammonBoard {
             newPoints[destinationIndex] = newPoints[destinationIndex].putChecker(playerColor);
         }
 
-
-
         return new BackgammonBoard(config, newPoints);
-    } // Board + Move[] = ? Board
+    }
+
+
 
     private List<BackgammonBoard> getPossibleBoardsForSteps(PlayerColor playerColor, Steps steps) {
         List<TurnCandidate> candidates = new ArrayList<>();
-        candidates.add(new TurnCandidate(new Turn(new Move[] {}), this));
-        TurnCandidate emptyTurnCandidate = new TurnCandidate(new Turn(new Move[] {}), this);
+        candidates.add(new TurnCandidate(new Turn(ImmutableList.of()), this));
+        TurnCandidate emptyTurnCandidate = new TurnCandidate(new Turn(ImmutableList.of()), this);
 
         for (int[] combination : new int[][] {
                 new int[] {steps.get(0), steps.get(1)},
@@ -113,14 +115,14 @@ public class BackgammonBoard {
                 BackgammonBoard nextBoard1 = this.asIfMoved(playerColor, move1);
 
                 if (nextBoard1 != null) {
-                    candidates.add(new TurnCandidate(new Turn(new Move[]{move1}), nextBoard1));
+                    candidates.add(new TurnCandidate(new Turn(ImmutableList.of(move1)), nextBoard1));
 
                     for (int j = 0; j < config.getPointsCount(); j++) {
                         Move move2 = new Move(j, combination[1]);
 
                         BackgammonBoard nextBoard2 = nextBoard1.asIfMoved(playerColor, move2);
                         if (nextBoard2 != null) {
-                            candidates.add(new TurnCandidate(new Turn(new Move[]{move1, move2}), nextBoard2));
+                            candidates.add(new TurnCandidate(new Turn(ImmutableList.of(move1, move2)), nextBoard2));
                         }
                     }
                 }

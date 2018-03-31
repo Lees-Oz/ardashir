@@ -1,5 +1,6 @@
 package com.lg.unit;
 
+import com.google.common.collect.ImmutableList;
 import com.lg.command.domain.valueobjects.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -29,10 +30,10 @@ public class BackgammonBoardTest extends TestCase {
         // Act & Assert
         IntStream.range(0, target.getConfig().getPointsCount() - 1).forEach(x -> {
 
-            BackgammonBoard result = target.asIfTurned(PlayerColor.WHITE, new Turn(new Move[] {
+            BackgammonBoard result = target.asIfTurned(PlayerColor.WHITE, new Turn(ImmutableList.of(
                     new Move(0, x),
                     new Move(0, 2)
-                    }));
+                    )));
 
             ArrayList<Integer> occupiedPoints = new ArrayList<>(Arrays.asList(1, 7, 12, 19));
 
@@ -47,19 +48,19 @@ public class BackgammonBoardTest extends TestCase {
         BackgammonBoard target =  BoardSamples.midGame();
 
         // Act & Assert
-        Assert.assertNull(target.asIfTurned(PlayerColor.BLACK, new Turn(new Move[] {
+        Assert.assertNull(target.asIfTurned(PlayerColor.BLACK, new Turn(ImmutableList.of(
                 new Move(12, 4),
-                new Move(16,2 )})));
-        Assert.assertNotNull(target.asIfTurned(PlayerColor.BLACK, new Turn(new Move[] {
+                new Move(16,2 )))));
+        Assert.assertNotNull(target.asIfTurned(PlayerColor.BLACK, new Turn(ImmutableList.of(
                 new Move(12, 2),
-                new Move(14,4 )})));
+                new Move(14,4 )))));
 
-        Assert.assertNull(target.asIfTurned(PlayerColor.BLACK, new Turn(new Move[] {
+        Assert.assertNull(target.asIfTurned(PlayerColor.BLACK, new Turn(ImmutableList.of(
                 new Move(5, 1),
-                new Move(9,3 )})));
-        Assert.assertNotNull(target.asIfTurned(PlayerColor.BLACK, new Turn(new Move[] {
+                new Move(9,3 )))));
+        Assert.assertNotNull(target.asIfTurned(PlayerColor.BLACK, new Turn(ImmutableList.of(
                 new Move(5, 1),
-                new Move(9,2 )})));
+                new Move(9,2 )))));
 
         Assert.assertNull(target.getWinner());
         // More cases here

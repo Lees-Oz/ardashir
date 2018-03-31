@@ -1,5 +1,6 @@
 package com.lg.unit;
 
+import com.google.common.collect.ImmutableList;
 import com.lg.command.domain.entities.GameSession;
 import com.lg.command.domain.events.GameStarted;
 import com.lg.command.domain.events.NewGameSessionStarted;
@@ -36,7 +37,7 @@ public class GameSessionTest extends TestCase {
         String gameId = UUID.randomUUID().toString();
         UUID player1Id = UUID.randomUUID();
         ProvideBackgammonConfig configProvider = mock(ProvideBackgammonConfig.class);
-        BackgammonConfig config = new BackgammonConfig();
+        BackgammonConfig config = new BackgammonConfig(15, 24, 0, 12, 6);
         when(configProvider.provide()).thenReturn(config);
 
         // Act
@@ -114,9 +115,9 @@ public class GameSessionTest extends TestCase {
         target.flush();
 
         // Act
-        Turn turn = new Turn(new Move[] {
+        Turn turn = new Turn(ImmutableList.of(
                 new Move(0, dice.getOne()),
-                new Move(0, dice.getTwo())});
+                new Move(0, dice.getTwo())));
         target.doTurn(player1Id, turn, rollDice);
 
         // Assert
