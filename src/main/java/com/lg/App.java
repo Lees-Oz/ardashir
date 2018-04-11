@@ -2,6 +2,7 @@ package com.lg;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.lg.web.socket.BroadcastGameEvents;
 import com.lg.web.CommandController;
 import com.lg.web.QueryController;
 import com.lg.web.WebSocketHandler;
@@ -19,5 +20,7 @@ public class App {
 
         put("/query/:name", injector.getInstance(QueryController.class));
         post("/command/:name", injector.getInstance(CommandController.class));
+
+        injector.getInstance(BroadcastGameEvents.class).listenGames();
     }
 }

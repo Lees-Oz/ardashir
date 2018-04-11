@@ -25,7 +25,9 @@ import com.lg.query.QueryProcessor;
 import com.lg.query.projections.Projection;
 import com.lg.utils.JsonSerializer;
 import com.lg.utils.SerializeJson;
-import com.lg.web.HandleWebsocket;
+import com.lg.web.socket.EventStoreGameEventsBroadcaster;
+import com.lg.web.socket.HandleWebsocket;
+import com.lg.web.socket.BroadcastGameEvents;
 import com.lg.web.WebSocketHandler;
 
 import java.time.Duration;
@@ -52,6 +54,7 @@ public class GuiceModule extends AbstractModule {
 
         // Websocket
         bind(HandleWebsocket.class).to(WebSocketHandler.class);
+        bind(BroadcastGameEvents.class).to(EventStoreGameEventsBroadcaster.class);
     }
 
     @Provides

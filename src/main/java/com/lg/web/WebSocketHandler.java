@@ -2,10 +2,10 @@ package com.lg.web;
 
 import com.google.inject.Inject;
 import com.lg.utils.SerializeJson;
+import com.lg.web.socket.GameSocketHub;
+import com.lg.web.socket.HandleWebsocket;
 import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.api.annotations.*;
-
-import java.io.IOException;
 
 @WebSocket
 public class WebSocketHandler implements HandleWebsocket {
@@ -27,7 +27,7 @@ public class WebSocketHandler implements HandleWebsocket {
             return;
         }
 
-        GameSocketHub.connectUser(user, gameId, playerId);
+        GameSocketHub.connectPlayerToGame(user, gameId, playerId);
 
         System.out.println("onConnect - gameId: " + gameId + ", playerId: " + playerId);
     }
@@ -38,28 +38,27 @@ public class WebSocketHandler implements HandleWebsocket {
         String playerId = user.getUpgradeRequest().getParameterMap().get("playerId").get(0);
 
         if (gameId.isEmpty() || playerId.isEmpty()) {
-            System.out.println("onClose - gameId and/or playerId is not provided, doing nothing");
+            System.out.println("Ignoring attempt to close connection with no gameId and/or playerId.");
             return;
         }
 
-        System.out.println("onClose - gameId: " + gameId + ", playerId: " + playerId);
-
-        GameSocketHub.disconnectUser(gameId, playerId);
+        System.out.println(String.format("Disconnected player playerId: %s, gameId: %s.", playerId, gameId));
+        GameSocketHub.disconnectPlayerFromGame(gameId, playerId);
     }
 
-    @OnWebSocketMessage
-    public void onMessage(Session user, String message) throws IOException {
-        String gameId = user.getUpgradeRequest().getParameterMap().get("gameId").get(0);
-        String playerId = user.getUpgradeRequest().getParameterMap().get("playerId").get(0);
-
-        if (gameId.isEmpty() || playerId.isEmpty()) {
-            System.out.println("onMessage - gameId and/or playerId is not provided, doing nothing");
-            return;
-        }
-
-        System.out.println("onMessage - gameId: " + gameId + ", playerId: " + playerId + ", message: " + message);
-
-        GameMessage event = (GameMessage)serializer.deserialize(message, GameMessage.class);
-        GameSocketHub.publishForGame(event);
-    }
+//    @OnWebSocketMessage
+//    public void onMessage(Session user, String message) throws IOException {
+//        String gameId = user.getUpgradeRequest().getParameterMap().get("gameId").get(0);
+//        String playerId = user.getUpgradeRequest().getParameterMap().get("playerId").get(0);
+//
+//        if (gameId.isEmpty() || playerId.isEmpty()) {
+//            System.out.println("onMessage - gameId and/or playerId is not provided, doing nothing");
+//            return;
+//        }
+//
+//        System.out.println("onMessage - gameId: " + gameId + ", playerId: " + playerId + ", message: " + message);
+//
+//        GameMessage event = (GameMessage)serializer.deserialize(message, GameMessage.class);
+//        //GameSocketHub.publishForGame(event);
+//    }
 }
