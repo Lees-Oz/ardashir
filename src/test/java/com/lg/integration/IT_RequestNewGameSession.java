@@ -71,6 +71,7 @@ public class IT_RequestNewGameSession {
             Assert.assertEquals(x.getWhitePlayerId(), player1Id);
             Assert.assertEquals(x.getBlackPlayerId(), player2Id);
             Assert.assertEquals(x.getStatus(), "started");
+            Assert.assertEquals(x.getNextPlayerId(), player1Id);
         });
     }
 
@@ -105,6 +106,7 @@ public class IT_RequestNewGameSession {
             Assert.assertNotNull(x);
             Assert.assertNotNull(x.getDice());
             Assert.assertNotNull(x.getBoardPoints());
+            Assert.assertEquals(x.getNextPlayerId(), player2Id);
         });
     }
 }

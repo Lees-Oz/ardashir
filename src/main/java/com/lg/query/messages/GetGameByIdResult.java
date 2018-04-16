@@ -14,17 +14,19 @@ public class GetGameByIdResult implements QueryResult {
     private BoardPoint[] boardPoints;
     private UUID whitePlayerId;
     private UUID blackPlayerId;
+    private UUID nextPlayerId;
     private String status;
 
     public GetGameByIdResult() {
     }
 
-    public GetGameByIdResult(String id, Dice dice, BoardPoint[] boardPoints, UUID whitePlayerId, UUID blackPlayerId, String status) {
+    public GetGameByIdResult(String id, Dice dice, BoardPoint[] boardPoints, UUID whitePlayerId, UUID blackPlayerId, UUID nextPlayerId, String status) {
         this.id = id;
         this.dice = dice;
         this.boardPoints = boardPoints;
         this.whitePlayerId = whitePlayerId;
         this.blackPlayerId = blackPlayerId;
+        this.nextPlayerId = nextPlayerId;
         this.status = status;
     }
 
@@ -50,6 +52,10 @@ public class GetGameByIdResult implements QueryResult {
 
     public String getStatus() {
         return status;
+    }
+
+    public UUID getNextPlayerId() {
+        return nextPlayerId;
     }
 }
 

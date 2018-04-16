@@ -126,7 +126,7 @@ public class GameSession extends AggregateRoot {
     }
 
     private UUID getOtherPlayer(UUID playerId) {
-        if (playerId == playerWhite) {
+        if (playerId.equals(playerWhite)) {
             return playerBlack;
         }
         return playerWhite;
